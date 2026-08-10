@@ -1,0 +1,39 @@
+﻿# Backend / OS
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# Java / Maven / Gradle
+.mvn/wrapper/maven-wrapper.jar
+.gradle/
+gradle-app.setting
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+coverage/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Misc
+*.tmp
+*.bak
