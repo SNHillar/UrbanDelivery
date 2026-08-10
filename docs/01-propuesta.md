@@ -7,7 +7,7 @@
 | **Integrantes** | Hillar, Saul · Diaz, Agustin |
 | **Tutor** | Londero, Oscar |
 | **Fecha** | Agosto 2026 |
-| **Repositorio** | Local: `C:\Users\saulh\Projects\UrbanDelivery` — _pegar URL de GitHub cuando crees el remoto_ |
+| **Repositorio** | https://github.com/SNHillar/UrbanDelivery.git |
 
 ---
 
