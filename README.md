@@ -15,7 +15,6 @@ Plataforma web de logística urbana local para pueblos del interior: digitaliza 
 ## Documentación
 
 - [Propuesta de proyecto (1.ª entrega)](docs/01-propuesta.md)
-- [Mensaje para el tutor](docs/mensaje-tutor.md)
 
 ## Stack
 
