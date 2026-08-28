@@ -15,6 +15,8 @@ Plataforma web de logística urbana local para pueblos del interior: digitaliza 
 ## Documentación
 
 - [Propuesta de proyecto (1.ª entrega)](docs/01-propuesta.md)
+- [Actualización post-devolución del tutor](docs/02-actualizacion.md)
+- [Relevamiento (Forms anónimos)](docs/relevamiento/README.md)
 
 ## Stack
 
@@ -36,6 +38,8 @@ docs/        # Propuesta, diseño BD y módulos
 
 ## Estado actual
 
-**1.ª entrega:** propuesta, plan de trabajo, stack y repositorio inicial.
+**1.ª entrega:** propuesta, plan de trabajo, stack y repositorio.
+
+**Actualización (Ago 2026):** relevamiento de campo (11 consumidores + 5 comercios, Forms anónimos) y respuesta a devolución del tutor — ver [docs/02-actualizacion.md](docs/02-actualizacion.md).
 
 Próximo hito (≤ 27/09): esquema de base de datos y listado de módulos.

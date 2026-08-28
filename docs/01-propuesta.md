@@ -38,15 +38,16 @@ En localidades del interior (~5.000 habitantes), el comercio local y los servici
 | **COURIER** | Visualiza entregas/mandados disponibles y actualiza estados de envío. |
 | **ADMIN** | Modera y aprueba altas de comercios y cadetes. |
 
-### 2.2 Funcionalidades del alcance (MVP)
+### 2.2 Funcionalidades del alcance (MVP — P0)
 
 - Gestión de usuarios y seguridad por roles (JWT).
 - Alta de MERCHANT/COURIER con **aprobación de ADMIN** (confianza del sistema).
 - Catálogo digital por comercio y exploración para el cliente.
 - Carrito con **restricción de comercio único** y alerta de reemplazo.
 - Pedidos de catálogo con estados: `Solicitado → En proceso → En camino → Entregado`.
-- Módulo de **mandados generales** (envíos abiertos: farmacia, encargos, etc.).
 - Panel de cadete para tomar trabajos y actualizar estado.
+
+> **Actualización (Ago 2026):** relevamiento de campo y correcciones del tutor en [02-actualizacion.md](02-actualizacion.md). Mandados generales pasan a **P1**.
 
 ### 2.3 Fuera de alcance (explícito)
 
@@ -67,7 +68,8 @@ Al cierre del desarrollo se debe poder demostrar:
 2. Admin aprueba un comercio y un cadete.
 3. Cliente arma carrito de un solo comercio y crea un pedido.
 4. Comercio procesa el pedido; cadete lo toma y lo lleva a **Entregado**.
-5. (Si hay tiempo / P1) Cliente crea un mandado y un cadete lo completa.
+
+*(Mandados generales: P1 — ver [02-actualizacion.md](02-actualizacion.md).)*
 
 ---
 
@@ -94,7 +96,7 @@ Arquitectura desacoplada (API REST + frontend SPA), apta para despliegue indepen
 |---------|---------|------------|
 | **≤ 30/08** | Propuesta, stack y repositorio | **1.ª Entrega** |
 | **≤ 27/09** | Esquema de BD (ER) + listado de módulos en el repo | **2.ª Entrega (condición de regular)** |
-| **28/09 – 07/11** | Desarrollo del MVP: fundación API, *vertical slice* del pedido, UI por roles, mandados (P1) | Producto usable |
+| **28/09 – 07/11** | Desarrollo del MVP: fundación API, *vertical slice* del pedido, UI por roles | Producto usable |
 | **≤ 14/11** | Pruebas, Docker, despliegue online, informe escrito, video (preferente EN) | **Entrega final** |
 | **Post 14/11** | Ensayo de presentación | **Defensa oral** |
 
@@ -102,7 +104,7 @@ Arquitectura desacoplada (API REST + frontend SPA), apta para despliegue indepen
 
 1. **Fundación:** Spring Boot + PostgreSQL (Docker Compose) + JWT/roles.
 2. **Vertical slice temprano:** registro/login → listar comercios → pedido → merchant → courier → Entregado.
-3. **Completar módulos:** catálogo merchant, moderación admin, mandados, front por rol.
+3. **Completar módulos:** catálogo merchant, moderación admin, front por rol; mandados si alcanza el tiempo (P1).
 4. **Cierre:** tests de invariantes críticas, seed de datos, deploy, documentación y video.
 
 ### 4.2 Priorización
