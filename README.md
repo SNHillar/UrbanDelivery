@@ -16,7 +16,10 @@ Plataforma web de logística urbana local para pueblos del interior: digitaliza 
 
 - [Propuesta de proyecto (1.ª entrega)](docs/01-propuesta.md)
 - [Actualización post-devolución del tutor](docs/02-actualizacion.md)
+- [Casos de pedido y máquinas de estado](docs/03-casos-y-estados.md)
+- [Modelo Entidad-Relación](docs/04-modelo-er.md)
 - [Relevamiento (Forms anónimos)](docs/relevamiento/README.md)
+- [Guía de entrevista a cadetes](docs/relevamiento/guia-cadetes.md)
 
 ## Stack
 

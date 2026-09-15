@@ -224,6 +224,8 @@ Pagos online en MVP · Geolocalización · WebSockets/push · Chat · Multi-come
 
 ## 6. Reglas de negocio críticas (flujo de pedido)
 
+> **Reemplazado (Sep 2026):** tras la 2.ª devolución, los estados, las transiciones y las reglas de rechazo/cancelación y costo de envío se redefinieron en [03-casos-y-estados.md](03-casos-y-estados.md). Esta sección queda como registro histórico.
+
 ### Transiciones de estado
 
 | Estado | Significado | Quién puede cambiarlo |
