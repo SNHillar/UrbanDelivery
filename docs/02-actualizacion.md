@@ -272,7 +272,7 @@ Pagos online en MVP · Geolocalización · WebSockets/push · Chat · Multi-come
 2. Referencia: programa oficial **Programación IV** (2026) — ver repositorio / adjunto de cátedra.
 3. Entrevista cualitativa con farmacia (cuando haya disponibilidad).
 4. Presentar actualización a Oscar para próxima revisión.
-5. **2.ª entrega (≤ 27/09):** diagrama ER + listado de módulos, usando estas reglas de negocio.
+5. ~~**2.ª entrega (≤ 27/09):** diagrama ER + listado de módulos.~~ *(hecho — ver [04-modelo-er.md](04-modelo-er.md) y [05-modulos.md](05-modulos.md))*
 6. Vertical slice técnico (post-aprobación): login → pedido → merchant → courier → entregado.
 
 ---
