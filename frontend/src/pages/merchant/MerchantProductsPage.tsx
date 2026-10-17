@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import { formatMoney } from '../../api/format'
-import type { Product } from '../../api/types'
+import type { Product } from '../../types/product'
 import { Card, ErrorMessage } from '../../components/ui'
 
 /** Disponibilidad con un click: evita recibir pedidos que después hay que rechazar. */

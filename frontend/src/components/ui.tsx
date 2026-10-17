@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import type { OrderStatus } from '../api/types'
+import type { OrderStatus } from '../types/order'
 
 const statusColors: Record<OrderStatus, string> = {
   PENDING: 'bg-amber-100 text-amber-800',

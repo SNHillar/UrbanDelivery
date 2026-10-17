@@ -1,5 +1,5 @@
 import { formatMoney } from '../api/format'
-import type { Order } from '../api/types'
+import type { Order } from '../types/order'
 
 export function OrderItems({ order }: { order: Order }) {
   return (

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { api } from '../../api/client'
 import { formatDateTime, formatMoney } from '../../api/format'
-import type { Order } from '../../api/types'
+import type { Order } from '../../types/order'
 import { Card, ErrorMessage, StatusBadge } from '../../components/ui'
 
 export function MyOrdersPage() {

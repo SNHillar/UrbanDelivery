@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { api } from '../../api/client'
-import type { Merchant } from '../../api/types'
+import type { Merchant } from '../../types/user'
 import { Card, ErrorMessage } from '../../components/ui'
 
 export function MerchantsPage() {

@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { api, getToken, setToken, setUnauthorizedHandler } from '../api/client'
-import type { LoginResponse, UserInfo } from '../api/types'
+import type { LoginResponse, UserInfo } from '../types/user'
 
 interface AuthState {
   user: UserInfo | null

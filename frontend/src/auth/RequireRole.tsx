@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Navigate } from 'react-router'
-import type { Role } from '../api/types'
+import type { Role } from '../types/rol'
 import { useAuth } from './AuthContext'
 import { homeFor } from './home'
 

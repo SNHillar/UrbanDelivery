@@ -3,7 +3,9 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { api } from '../../api/client'
 import { formatMoney } from '../../api/format'
-import type { Merchant, OrderDetail, Product } from '../../api/types'
+import type { Merchant } from '../../types/user'
+import type { OrderDetail } from '../../types/order'
+import type { Product } from '../../types/product'
 import { Button, Card, ErrorMessage } from '../../components/ui'
 
 /** Catálogo + carrito. El carrito vive solo en el front y es de un único comercio (invariante #4). */

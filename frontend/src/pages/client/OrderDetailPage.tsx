@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router'
 import { api } from '../../api/client'
 import { formatDateTime } from '../../api/format'
-import type { OrderDetail } from '../../api/types'
+import type { OrderDetail } from '../../types/order'
 import { OrderItems } from '../../components/OrderItems'
 import { Button, Card, ErrorMessage, StatusBadge } from '../../components/ui'
 
