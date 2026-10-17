@@ -21,6 +21,8 @@ Plataforma web de logística urbana local para pueblos del interior: digitaliza 
 - [Listado de módulos](docs/05-modulos.md)
 - [Relevamiento (Forms anónimos)](docs/relevamiento/README.md)
 - [Guía de entrevista a cadetes](docs/relevamiento/guia-cadetes.md)
+- [Backend: arquitectura, endpoints, errores y tests](backend/README.md)
+- [Frontend: estructura, rutas y recorrido de prueba](frontend/README.md)
 
 ## Stack
 
@@ -45,6 +47,8 @@ docker-compose.yml   # PostgreSQL 16 para desarrollo
 
 Requisitos: **JDK 21**, **Docker** y **Node 22** con pnpm (o npm).
 
+Con Docker Desktop en Linux, el daemon tiene que estar iniciado antes del paso 1 (`systemctl --user start docker-desktop` o abriendo la app). Si no, `docker compose` falla con `failed to connect to the docker API` y la API no arranca por falta de base.
+
 ```bash
 # 1. Base de datos
 docker compose up -d db
@@ -61,6 +65,8 @@ pnpm dev
 
 Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`.
 
+Detalle de configuración, problemas comunes y recorrido de prueba en [backend/README.md](backend/README.md) y [frontend/README.md](frontend/README.md).
+
 **Tests:** `cd backend && ./mvnw verify` corre los tests unitarios y los de integración contra un PostgreSQL efímero (Testcontainers, requiere Docker). Sin Docker se puede apuntar a una base existente: `./mvnw verify -Dtest.external-db=true -DDB_URL=jdbc:postgresql://localhost:5432/urbandelivery`.
 
 ## Estado actual
@@ -73,6 +79,6 @@ Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local
 
 **3.ª devolución (Oct 2026): Modelo y Arquitectura conforme con correcciones.** Correcciones aplicadas en [03](docs/03-casos-y-estados.md) (dinero, mínima información para el cadete, única localidad, fallback PICKUP).
 
-**Primer recorrido ejecutable (caso B, PICKUP):** cliente → comercio → pedido → acepta → prepara → `READY` → retira → `COMPLETED`, con login JWT, máquina de estados e historial en la misma transacción, probado de punta a punta contra PostgreSQL.
+**Primer recorrido ejecutable (caso B, PICKUP):** cliente → comercio → pedido → acepta → prepara → `READY` → retira → `COMPLETED`, con login JWT, máquina de estados e historial en la misma transacción, probado de punta a punta contra PostgreSQL. `./mvnw verify`: 14 tests en verde con Testcontainers (17/10/2026).
 
 Pendiente: entrevistas a 3–5 cadetes para validar el actor COURIER. Si se valida, sigue el caso A (DELIVERY) con prueba concurrente real al tomar la entrega.
