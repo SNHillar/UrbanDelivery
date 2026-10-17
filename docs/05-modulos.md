@@ -36,14 +36,14 @@ Cada módulo es un paquete con sus capas `controller → service → repository`
 
 ## 2. Módulos del frontend (React + Tailwind + TanStack Query)
 
-Una SPA mobile-first con rutas protegidas por rol. Se desarrolla al ritmo de Programación IV (U5–U7 listados y consumo de API, U8 formularios y tablas, U9–U10 JWT y rutas protegidas).
+Una SPA mobile-first con rutas protegidas por rol. Se arranca junto con el backend en el recorrido PICKUP (login JWT incluido), sin esperar a que cada tema aparezca en Programación IV (3.ª devolución).
 
 | Área | Pantallas | Consume módulos | Prioridad |
 |------|-----------|-----------------|-----------|
 | **Pública / Auth** | Login, registro (elige rol), solicitud de alta de comercio / cadete | 1, 2, 3 | P0 |
 | **Cliente** | Comercios, catálogo del comercio, carrito mono-comercio con aviso de reemplazo, checkout (retiro / envío), mis pedidos con estado | 3, 5, 6, 9 | P0 |
 | **Comercio** | Bandeja de pedidos (aceptar, rechazar con motivo, marcar listo, marcar retirado, cancelar), gestión de catálogo y disponibilidad, datos del comercio | 3, 5, 7 | P0 |
-| **Cadete** | Bandeja común de entregas disponibles (con `delivery_fee` y datos antes de tomar), mis entregas (liberar, retirar, entregar) | 8, 9 | P0 |
+| **Cadete** | Bandeja común de entregas disponibles (comercio, zona aproximada y `delivery_fee`; dirección exacta recién al tomar), mis entregas (liberar, retirar, entregar) | 8, 9 | P0 *(sujeto a validar COURIER)* |
 | **Admin** | Altas pendientes, aprobar / rechazar, listados generales | 4 | P0 |
 
 ---

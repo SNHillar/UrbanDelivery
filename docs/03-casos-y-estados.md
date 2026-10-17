@@ -16,10 +16,12 @@ Respuesta a la 2.ª devolución del tutor. Antes de cerrar el ER se modelan tres
 | Rechazo vs. cancelación | **Rechazo** = comercio, solo en `PENDING`. **Cancelación** = cliente solo en `PENDING`; después de aceptado, solo el comercio y con motivo | Si el comercio ya empezó a preparar, la cancelación del cliente genera un costo |
 | Disponibilidad | `products.available` se activa/desactiva con un click. Sin inventario | Evita recibir pedidos que después hay que rechazar |
 | Precio histórico | `order_items` copia `product_name` y `unit_price` al crear el pedido | Cambios de catálogo no alteran pedidos históricos |
-| Costo de envío | Tarifa fija por comercio (`merchants.delivery_fee`, `0` = incluido), copiada a `orders.delivery_fee`. El cadete la ve antes de tomar y **la cobra al cliente contra entrega** | Sin "a acordar": no reintroducir negociación manual. Hoy los comercios fijan el costo o no lo cobran |
+| Costo de envío | Tarifa fija por comercio (`merchants.delivery_fee`, `0` = incluido), copiada a `orders.delivery_fee`. El cadete la ve antes de tomar y cobra **solo** esa tarifa al cliente *(regla provisoria, se valida con cadetes)* | Sin "a acordar": no reintroducir negociación manual. Hoy los comercios fijan el costo o no lo cobran |
 | Trazabilidad | `order_status_history` registra cada transición: entidad, desde, hacia, actor, motivo y fecha | Conservar quién hizo cada cambio y cuándo |
 
-El cobro de los productos sigue fuera de la app (pago contra entrega o acuerdo offline, como en la propuesta).
+**Dinero (3.ª devolución):** UrbanDelivery no procesa ni administra el pago de los productos; cliente y comercio lo resuelven por fuera de la plataforma. La aplicación sólo registra el valor del pedido y la tarifa de entrega. El cadete **no** cobra el total de la venta.
+
+**Cobertura:** P0 funciona dentro de **una única localidad**, con direcciones en texto libre. Sin zonas, distancias ni ruteo.
 
 ---
 
@@ -81,7 +83,13 @@ stateDiagram-v2
 | `AVAILABLE`/`ASSIGNED` → `CANCELLED` | Sistema | El MERCHANT canceló el pedido | Libera al cadete |
 | `IN_TRANSIT` → `CANCELLED` | Sistema | ADMIN canceló el pedido *(provisorio)* | Queda el motivo en el historial |
 
-**Antes de tomar, el cadete ve:** comercio y dirección de retiro, dirección y referencia de entrega, ítems, notas, estado de preparación y `delivery_fee`.
+**Mínima información necesaria (3.ª devolución):**
+
+| Momento | El cadete ve |
+|---------|--------------|
+| Antes de tomar (bandeja común) | Comercio y dirección de retiro, zona aproximada de entrega, estado de preparación y `delivery_fee` |
+| Una vez asignado | Además: dirección exacta, referencia y notas de entrega |
+| Nunca (salvo necesidad operativa concreta) | Ítems comprados |
 
 ## 4. Estado que ve el cliente (derivado)
 
@@ -142,14 +150,16 @@ Como el rechazo ocurre antes de aceptar, **nunca se crea `deliveries`** aunque e
 
 | Tema | Regla provisoria P0 | Se valida con |
 |------|---------------------|---------------|
-| El cadete no puede entregar después de retirar | Se resuelve fuera de la app; ADMIN puede cancelar el pedido con motivo | Entrevistas a cadetes ([guía](relevamiento/guia-cadetes.md)) |
-| ¿Existe oferta de cadetes independientes? | Se mantiene COURIER en P0. Si no se valida: retiro + reparto propio del comercio. El esquema no cambia porque `deliveries` ya es opcional | Entrevistas a cadetes |
+| El cadete no puede entregar después de retirar | **Pendiente, no consolidado.** `IN_TRANSIT → CANCELLED` queda fuera de la implementación hasta las entrevistas: una cancelación simple puede no representar lo que ocurrió | Entrevistas a cadetes ([guía](relevamiento/guia-cadetes.md)) |
+| ¿Existe oferta de cadetes independientes? | No se amplía el esquema. Primero se valida COURIER. Si no se valida, **P0 se concentra en PICKUP** y el reparto (red de cadetes o propio del comercio) pasa a una segunda etapa. *El "reparto propio" no está modelado: el dueño tiene rol MERCHANT, no COURIER* | Entrevistas a cadetes |
 | Cancelación después de aceptar | Solo el comercio, con motivo | Consulta a comercios ([guía](relevamiento/guia-cadetes.md#pregunta-para-comercios)) |
-| Quién cobra el envío | El cadete cobra `delivery_fee` al cliente | Entrevistas a cadetes |
+| Quién cobra el envío | El cadete cobra solo `delivery_fee` al cliente, nunca el total de la venta | Entrevistas a cadetes |
 
 ## 7. Próximos pasos (fuera de este documento)
 
-1. Entrevistar cadetes y consultar la regla de cancelación a comercios.
-2. **Spike de seguridad temprano:** login → JWT → endpoint protegido → validación por rol.
-3. **Deploy mínimo temprano** (API + DB en Render, front en Vercel) y seguir trabajando local.
-4. Cerrar el [modelo ER](04-modelo-er.md) con estos casos.
+Actualizado tras la 3.ª devolución:
+
+1. **Recorrido ejecutable PICKUP (caso B):** React → Spring Boot → JPA → PostgreSQL → máquina de estados → historial, con login JWT.
+2. Entrevistar 3–5 cadetes y consultar la regla de cancelación a comercios.
+3. Si se valida COURIER: caso A (DELIVERY) con **prueba concurrente real** al tomar la entrega (dos cadetes simultáneos → exactamente uno la obtiene, el otro recibe conflicto).
+4. Deploy mínimo (API + DB en Render, front en Vercel).

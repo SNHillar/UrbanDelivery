@@ -24,9 +24,11 @@ Pedido del tutor en la 2.ª devolución: validar el lado **COURIER** antes de ce
 5. ¿Cómo fijás el precio de un viaje? ¿Monto fijo, por distancia, lo pone el comercio?
 6. ¿Quién te paga: el cliente, el comercio? ¿En efectivo, transferencia?
 7. Si el envío tuviera una **tarifa fija conocida antes de aceptar**, ¿te serviría? ¿Qué monto te parece razonable dentro del pueblo?
+7b. ¿Cobrás también el pedido del comercio o solo el envío? ¿Te sentís cómodo llevando plata de otro?
 
 ### Antes de aceptar
 8. ¿Qué necesitás saber antes de aceptar un viaje? (dirección, qué llevás, cuánto pesa, cuánto cobrás, si está listo…)
+8b. ¿Qué datos del cliente necesitás **antes** de aceptar y cuáles te alcanza con recibir **después** de tomar el viaje (dirección exacta, nombre, qué lleva)?
 9. ¿Te pasa llegar al comercio y que el pedido no esté listo? ¿Cuánto esperás?
 
 ### Bandeja común
@@ -35,7 +37,7 @@ Pedido del tutor en la 2.ª devolución: validar el lado **COURIER** antes de ce
 
 ### Cuando algo sale mal
 12. ¿Qué hacés cuando no podés completar una entrega (no está el cliente, dirección mal, se rompe la moto)?
-13. ¿Qué pasa con el pedido y con el cobro en ese caso?
+13. ¿Qué pasa con el pedido y con el cobro en ese caso? ¿Lo devolvés al comercio, lo dejás a un vecino, lo volvés a intentar?
 14. ¿Alguna vez tomaste un viaje y lo tuviste que largar antes de retirarlo?
 
 ### Problemas hoy

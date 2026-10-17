@@ -163,6 +163,8 @@ El stack de UrbanDelivery coincide con la **Programación IV** (4.º cuatrimestr
 2. **React y TanStack Query** entran cuando el TF necesita el front (octubre).
 3. **JWT y roles** en la materia coinciden con **noviembre**, cuando el TF debe cerrar seguridad — el mayor aprendizaje nuevo está **calendarizado** en ambos lados.
 
+> **Corrección (3.ª devolución del tutor):** el criterio anterior —incorporar cada tecnología cuando aparece en Programación IV— queda **descartado**. El Proyecto Final no espera a otra materia para probar una decisión central: JWT y React se prueban con un *spike* temprano, dentro del primer recorrido ejecutable (caso PICKUP).
+
 **Diferencia honesta:** la cátedra enseña JWT con **FastAPI + Zustand**; UrbanDelivery lo implementará con **Spring Security + JWT** en backend y protección de rutas en React (conceptos equivalentes, distinta stack en auth del lado Python). El equipo traslada el patrón, no copia el mismo código de la unidad.
 
 **RA de la materia que cubre el TF:**
@@ -259,7 +261,7 @@ Pagos online en MVP · Geolocalización · WebSockets/push · Chat · Multi-come
 | Dimensión | Evaluación | Riesgo principal | Mitigación |
 |-----------|------------|------------------|------------|
 | **Técnica** | Viable con stack propuesto | JWT, estados, concurrencia cadete | Vertical slice + tests de invariantes |
-| **Conocimiento** | Viable; alineado a Prog. IV | JWT/roles (sem. 14–16); React (desde sem. 9) | Backend y ER antes del 27/09; front al ritmo de U5–U7; auth en noviembre |
+| **Conocimiento** | Viable; alineado a Prog. IV | JWT/roles (sem. 14–16); React (desde sem. 9) | ~~Front al ritmo de U5–U7; auth en noviembre~~ → spike temprano de JWT y React en el recorrido PICKUP (3.ª devolución) |
 | **Temporal** | Ajustada si se respeta P0 | Sobredimensionar alcance | P0/P1/P2 explícito; mandados fuera de demo |
 | **Operativa** | Parcialmente validada | Adopción comercios; comisiones | Relevamiento muestra interés; sin comisiones altas en MVP académico |
 | **Evidencia** | Mejorada vs 1.ª entrega | Muestra pequeña; sin cadetes entrevistados | Forms anónimos N=16 + contacto directo; entrevista farmacia pendiente |
@@ -273,7 +275,7 @@ Pagos online en MVP · Geolocalización · WebSockets/push · Chat · Multi-come
 3. Entrevista cualitativa con farmacia (cuando haya disponibilidad).
 4. Presentar actualización a Oscar para próxima revisión.
 5. ~~**2.ª entrega (≤ 27/09):** diagrama ER + listado de módulos.~~ *(hecho — ver [04-modelo-er.md](04-modelo-er.md) y [05-modulos.md](05-modulos.md))*
-6. Vertical slice técnico (post-aprobación): login → pedido → merchant → courier → entregado.
+6. Vertical slice técnico: primero PICKUP (login → pedido → comercio acepta → listo → retirado); DELIVERY con cadete solo si las entrevistas validan COURIER — ver [03 §7](03-casos-y-estados.md#7-próximos-pasos-fuera-de-este-documento).
 
 ---
 
