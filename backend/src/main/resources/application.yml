@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: urbandelivery-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/urbandelivery}
+    username: ${DB_USER:urbandelivery}
+    password: ${DB_PASSWORD:urbandelivery}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo maneja Flyway; Hibernate solo verifica que las entidades coincidan.
+      ddl-auto: validate
+  flyway:
+    # db/demo carga usuarios, comercios y productos de ejemplo. En producción: solo db/migration.
+    locations: classpath:db/migration,classpath:db/demo
+  web:
+    # Mensajes de validación en español, sin depender del Accept-Language del navegador
+    locale: es
+    locale-resolver: fixed
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-at-least-32-chars}
+    ttl: 8h
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
