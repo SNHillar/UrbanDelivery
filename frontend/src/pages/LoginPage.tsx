@@ -8,6 +8,7 @@ const DEMO_USERS = [
   { email: 'cliente@urbandelivery.local', label: 'Cliente' },
   { email: 'rotiseria@urbandelivery.local', label: 'Rotisería' },
   { email: 'farmacia@urbandelivery.local', label: 'Farmacia' },
+  { email: 'admin@urbandelivery.local', label: 'Admin' },
 ]
 
 export function LoginPage() {

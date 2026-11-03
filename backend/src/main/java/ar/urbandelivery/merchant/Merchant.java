@@ -3,6 +3,7 @@ package ar.urbandelivery.merchant;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import ar.urbandelivery.common.ApiException;
 import ar.urbandelivery.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -75,6 +76,24 @@ public class Merchant {
 		return approvalStatus == ApprovalStatus.APPROVED;
 	}
 
+	public void approve(User admin, Instant now) {
+		moveTo(ApprovalStatus.APPROVED, admin, now);
+	}
+
+	public void reject(User admin, Instant now) {
+		moveTo(ApprovalStatus.REJECTED, admin, now);
+	}
+
+	private void moveTo(ApprovalStatus target, User admin, Instant now) {
+		if (approvalStatus != ApprovalStatus.PENDING) {
+			throw ApiException.conflict("INVALID_TRANSITION",
+					"El comercio está " + approvalStatus + " y no puede pasar a " + target);
+		}
+		approvalStatus = target;
+		approvedBy = admin;
+		approvedAt = now;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -117,6 +136,14 @@ public class Merchant {
 
 	public ApprovalStatus getApprovalStatus() {
 		return approvalStatus;
+	}
+
+	public User getApprovedBy() {
+		return approvedBy;
+	}
+
+	public Instant getApprovedAt() {
+		return approvedAt;
 	}
 
 }

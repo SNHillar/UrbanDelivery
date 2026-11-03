@@ -24,6 +24,9 @@ export function Layout() {
                 <NavLink to="/comercio/productos" className={linkClass}>Productos</NavLink>
               </>
             )}
+            {user.role === 'ADMIN' && (
+              <NavLink to="/admin/comercios" className={linkClass}>Comercios pendientes</NavLink>
+            )}
             <span className="ml-2 hidden text-sm text-stone-500 sm:inline">{user.fullName}</span>
             <button onClick={logout} className="rounded-md px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-200">
               Salir

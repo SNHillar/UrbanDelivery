@@ -8,6 +8,7 @@ import { MyOrdersPage } from './pages/client/MyOrdersPage'
 import { OrderDetailPage } from './pages/client/OrderDetailPage'
 import { MerchantOrdersPage } from './pages/merchant/MerchantOrdersPage'
 import { MerchantProductsPage } from './pages/merchant/MerchantProductsPage'
+import { AdminMerchantsPage } from './pages/admin/AdminMerchantsPage'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/mis-pedidos/:orderId" element={<RequireRole role="CLIENT"><OrderDetailPage /></RequireRole>} />
         <Route path="/comercio/pedidos" element={<RequireRole role="MERCHANT"><MerchantOrdersPage /></RequireRole>} />
         <Route path="/comercio/productos" element={<RequireRole role="MERCHANT"><MerchantProductsPage /></RequireRole>} />
+        <Route path="/admin/comercios" element={<RequireRole role="ADMIN"><AdminMerchantsPage /></RequireRole>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Route>
     </Routes>

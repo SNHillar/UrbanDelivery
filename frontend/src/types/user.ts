@@ -25,6 +25,15 @@ export interface Merchant {
   offersDelivery: boolean
 }
 
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
+
+/** Comercio visto por el ADMIN: incluye estado de aprobación y datos del dueño. */
+export interface AdminMerchant extends Merchant {
+  approvalStatus: ApprovalStatus
+  ownerFullName: string
+  ownerEmail: string
+}
+
 
 
 
