@@ -1,6 +1,6 @@
 # UrbanDelivery — API (backend)
 
-API REST del recorrido PICKUP (caso B de [docs/03](../docs/03-casos-y-estados.md)): el cliente pide, el comercio acepta, prepara, marca listo y entrega en el local. El reparto (DELIVERY) todavía no está habilitado: depende de validar el actor COURIER con las entrevistas.
+API REST del recorrido PICKUP (caso B de [docs/03](../docs/03-casos-y-estados.md)): el cliente pide, el comercio acepta, prepara, marca listo y entrega en el local, más la moderación de comercios por el ADMIN. Alcance final de esta entrega — el reparto con cadetes (DELIVERY) no se implementa, ver [docs/06-alcance-final.md](../docs/06-alcance-final.md).
 
 ## Stack
 
@@ -63,7 +63,7 @@ Otras decisiones de configuración:
 
 Migraciones en `src/main/resources/`:
 
-- `db/migration/V1__core_schema.sql`: tablas `users`, `merchants`, `products`, `orders`, `order_items`, `order_status_history`, con los CHECK de las invariantes de [docs/04](../docs/04-modelo-er.md) §3 (DELIVERY con dirección, PICKUP sin costo de envío, rechazo con motivo, etc.). `deliveries` y `courier_profiles` **no** se crean todavía: entran en una migración nueva si se valida COURIER.
+- `db/migration/V1__core_schema.sql`: tablas `users`, `merchants`, `products`, `orders`, `order_items`, `order_status_history`, con los CHECK de las invariantes de [docs/04](../docs/04-modelo-er.md) §3 (DELIVERY con dirección, PICKUP sin costo de envío, rechazo con motivo, etc.). `deliveries` y `courier_profiles` **no se crean**: el reparto con cadetes queda fuera del alcance de esta entrega (ver [docs/06](../docs/06-alcance-final.md)).
 - `db/demo/V1_1__demo_data.sql`: datos de demostración. En producción se carga solo `db/migration` (cambiar `spring.flyway.locations`).
 
 ### Usuarios de demostración
@@ -90,10 +90,11 @@ ar.urbandelivery
 ├── common    ApiException, GlobalExceptionHandler (ProblemDetail), Clock y OpenAPI
 ├── auth      Login, emisión/validación de JWT, SecurityConfig, AuthenticatedUser
 ├── user      User, Role
-├── merchant  Merchant, listado de comercios aprobados
+├── merchant  Merchant, listado de comercios aprobados, moderación (approve/reject)
 ├── catalog   Product, catálogo público y disponibilidad para el comercio
 ├── order     Order, OrderItem, OrderStatus (máquina de estados), OrderService
-└── history   OrderStatusHistory, StatusHistoryService
+├── history   OrderStatusHistory, StatusHistoryService
+└── admin     AdminMerchantController: bandeja de comercios pendientes para el ADMIN
 ```
 
 Decisiones de diseño:
@@ -128,6 +129,9 @@ Todos bajo `/api`. Salvo login y lectura de comercios/catálogo, requieren `Auth
 | POST | `/orders/{id}/ready` | MERCHANT | `PREPARING → READY` |
 | POST | `/orders/{id}/complete` | MERCHANT | `READY → COMPLETED` (el cliente retiró) |
 | POST | `/orders/{id}/cancel` | CLIENT / MERCHANT | Cliente: solo en `PENDING`. Comercio: en `PREPARING` o `READY`, con `{reason}` |
+| GET | `/admin/merchants?status=` | ADMIN | Comercios por estado de aprobación (default `PENDING`) |
+| POST | `/admin/merchants/{id}/approve` | ADMIN | `PENDING → APPROVED` |
+| POST | `/admin/merchants/{id}/reject` | ADMIN | `PENDING → REJECTED` |
 
 ### Errores
 
@@ -171,9 +175,12 @@ Para correrlos contra una base existente sin Testcontainers:
 | `OrderStatusTest` | Todas las transiciones permitidas y prohibidas coinciden con docs/03 §2 |
 | `AuthIT` | El login devuelve un JWT que identifica al usuario; contraseña incorrecta, token ausente o falsificado → 401; el catálogo público no pide token |
 | `PickupOrderFlowIT` | Caso B completo con 4 filas de historial y actores correctos; caso C (rechazo sin motivo → 400, con motivo → `REJECTED`); el cliente cancela en `PENDING` pero no en `PREPARING`; el comercio cancela un pedido aceptado con motivo pero un `PENDING` se rechaza; otro comercio no puede actuar → 403; transición inválida → 409; producto no disponible, producto de otro comercio y DELIVERY → 422; un comercio no puede crear pedidos → 403; **dos aceptaciones simultáneas del mismo pedido → exactamente una 200 y una 409** |
+| `AdminMerchantModerationIT` | ADMIN aprueba un comercio `PENDING` y recién ahí aparece en `/merchants`; rechazo lo deja oculto; un rol distinto de ADMIN recibe 403; aprobar dos veces el mismo comercio → 409 |
 
-Último resultado (17/10/2026): 14 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
+18 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
 
 ## Próximos pasos
 
-Si las entrevistas validan COURIER: migración nueva con `courier_profiles` y `deliveries`, slice DELIVERY (caso A), bandeja del cadete con mínima información (comercio, zona aproximada y tarifa; dirección exacta recién al ser asignado) y test concurrente de dos cadetes tomando la misma entrega.
+**Entrega final: V1 solo PICKUP** (ver [docs/06-alcance-final.md](../docs/06-alcance-final.md)). El reparto con cadetes no se implementa en este trabajo final: la migración de `courier_profiles`/`deliveries`, el slice DELIVERY (caso A), la bandeja del cadete y el test concurrente de asignación quedan documentados como evolución futura, no como trabajo pendiente de esta entrega.
+
+Pendiente real para el cierre: alta propia de usuarios/comercios (hoy solo por datos semilla) y deploy (API + DB en Render, front en Vercel).

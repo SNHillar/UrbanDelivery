@@ -1,8 +1,8 @@
 # UrbanDelivery
 
-Plataforma web de logística urbana local para pueblos del interior: digitaliza el catálogo de comercios, desacopla el reparto con cadetes independientes y permite mandados generales.
+Plataforma web de pedidos para comercios de pueblos del interior: catálogo digital, carrito mono-comercio y seguimiento del pedido hasta el retiro en el local.
 
-> Trabajo final de facultad — inventiva propia.
+> Trabajo final de facultad — inventiva propia. **Alcance de la entrega final: V1 solo retiro (PICKUP)** — el reparto con cadetes independientes y los mandados generales quedaron fuera de esta entrega; ver [por qué y qué significa](docs/06-alcance-final.md).
 
 ## Equipo
 
@@ -19,6 +19,8 @@ Plataforma web de logística urbana local para pueblos del interior: digitaliza 
 - [Casos de pedido y máquinas de estado](docs/03-casos-y-estados.md)
 - [Modelo Entidad-Relación](docs/04-modelo-er.md)
 - [Listado de módulos](docs/05-modulos.md)
+- [Alcance de la entrega final: V1 solo PICKUP](docs/06-alcance-final.md)
+- [Deploy: Render (API + DB) y Vercel (front)](docs/07-deploy.md)
 - [Relevamiento (Forms anónimos)](docs/relevamiento/README.md)
 - [Guía de entrevista a cadetes](docs/relevamiento/guia-cadetes.md)
 - [Backend: arquitectura, endpoints, errores y tests](backend/README.md)
@@ -63,7 +65,7 @@ pnpm install
 pnpm dev
 ```
 
-Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`.
+Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`, `pendiente@urbandelivery.local` (comercio sin aprobar) y `admin@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`; no hay todavía una pantalla de registro propio, las altas nuevas se hacen cargando filas en esa migración.
 
 Detalle de configuración, problemas comunes y recorrido de prueba en [backend/README.md](backend/README.md) y [frontend/README.md](frontend/README.md).
 
@@ -79,6 +81,12 @@ Detalle de configuración, problemas comunes y recorrido de prueba en [backend/R
 
 **3.ª devolución (Oct 2026): Modelo y Arquitectura conforme con correcciones.** Correcciones aplicadas en [03](docs/03-casos-y-estados.md) (dinero, mínima información para el cadete, única localidad, fallback PICKUP).
 
-**Primer recorrido ejecutable (caso B, PICKUP):** cliente → comercio → pedido → acepta → prepara → `READY` → retira → `COMPLETED`, con login JWT, máquina de estados e historial en la misma transacción, probado de punta a punta contra PostgreSQL. `./mvnw verify`: 14 tests en verde con Testcontainers (17/10/2026).
+**Recorrido ejecutable (caso B, PICKUP):** cliente → comercio → pedido → acepta → prepara → `READY` → retira → `COMPLETED`, con login JWT, máquina de estados e historial en la misma transacción, probado de punta a punta contra PostgreSQL.
 
-Pendiente: entrevistas a 3–5 cadetes para validar el actor COURIER. Si se valida, sigue el caso A (DELIVERY) con prueba concurrente real al tomar la entrega.
+**Moderación (ADMIN):** altas de comercio en `PENDING` → el ADMIN aprueba o rechaza desde `/admin/comercios`; recién ahí el comercio aparece en el catálogo público.
+
+`./mvnw verify`: 18 tests en verde con Testcontainers.
+
+**Entrega final (Nov 2026): alcance cerrado en V1 solo PICKUP** — ver [docs/06-alcance-final.md](docs/06-alcance-final.md). El reparto con cadetes (caso A, DELIVERY) no se implementa en este trabajo final; queda documentado como evolución futura, no como P1 pendiente.
+
+**Deploy:** Dockerfile del backend listo y probado (arranca con el puerto por variable de entorno, conecta a una base remota, responde CORS correctamente). Pasos en [docs/07-deploy.md](docs/07-deploy.md); falta ejecutarlos en Render y Vercel.

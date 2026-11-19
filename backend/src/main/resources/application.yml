@@ -1,3 +1,7 @@
+server:
+  # Render asigna el puerto por variable de entorno; en desarrollo queda el 8080 de siempre.
+  port: ${PORT:8080}
+
 spring:
   application:
     name: urbandelivery-api

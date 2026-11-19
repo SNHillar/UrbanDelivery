@@ -1,6 +1,6 @@
 # UrbanDelivery — Web (frontend)
 
-SPA del recorrido PICKUP: el cliente arma un pedido para retirar y lo sigue; el comercio lo gestiona desde su bandeja. La interfaz es funcional y mobile-first, sin diseño final.
+SPA del recorrido PICKUP: el cliente arma un pedido para retirar y lo sigue; el comercio lo gestiona desde su bandeja; el admin aprueba o rechaza altas de comercio. La interfaz es funcional y mobile-first, sin diseño final.
 
 ## Stack
 
@@ -42,6 +42,8 @@ Abrir dos ventanas (una normal y una de incógnito, porque la sesión se guarda 
 
 Variantes: rechazar o cancelar (pide motivo), cancelar desde el cliente mientras está pendiente, marcar un producto como no disponible en *Productos* y ver que desaparece del catálogo.
 
+**Admin** (`admin@urbandelivery.local`): *Comercios pendientes* → el comercio de demo sin aprobar (dueño `pendiente@urbandelivery.local`) aparece ahí → *Aprobar* → recién ahí aparece en el listado público de comercios (`/comercios` como cliente).
+
 ## Estructura
 
 ```
@@ -53,7 +55,7 @@ src/
 │   └── format.ts       Formato de moneda y fechas (es-AR)
 ├── types/              Tipos de las respuestas de la API
 │   ├── rol.ts          Role
-│   ├── user.ts         UserInfo, LoginResponse, Merchant
+│   ├── user.ts         UserInfo, LoginResponse, Merchant, AdminMerchant
 │   ├── product.ts      Product
 │   └── order.ts        OrderStatus, Order, OrderItem, StatusChange, OrderDetail
 ├── auth/
@@ -64,7 +66,8 @@ src/
 └── pages/
     ├── LoginPage.tsx
     ├── client/         MerchantsPage, CatalogPage, MyOrdersPage, OrderDetailPage
-    └── merchant/       MerchantOrdersPage, MerchantProductsPage
+    ├── merchant/        MerchantOrdersPage, MerchantProductsPage
+    └── admin/           AdminMerchantsPage
 ```
 
 ## Rutas
@@ -78,6 +81,7 @@ src/
 | `/mis-pedidos/:orderId` | CLIENT | Detalle, estado e historial; cancelar mientras está pendiente |
 | `/comercio/pedidos` | MERCHANT | Bandeja por estado con las acciones de la máquina de estados |
 | `/comercio/productos` | MERCHANT | Disponibilidad de productos |
+| `/admin/comercios` | ADMIN | Comercios `PENDING`: aprobar / rechazar |
 
 Cualquier otra ruta redirige a `/login`; después del login cada rol va a su pantalla inicial.
 

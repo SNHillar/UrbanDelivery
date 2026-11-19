@@ -159,7 +159,9 @@ Como el rechazo ocurre antes de aceptar, **nunca se crea `deliveries`** aunque e
 
 Actualizado tras la 3.ª devolución:
 
-1. **Recorrido ejecutable PICKUP (caso B):** React → Spring Boot → JPA → PostgreSQL → máquina de estados → historial, con login JWT.
-2. Entrevistar 3–5 cadetes y consultar la regla de cancelación a comercios.
-3. Si se valida COURIER: caso A (DELIVERY) con **prueba concurrente real** al tomar la entrega (dos cadetes simultáneos → exactamente uno la obtiene, el otro recibe conflicto).
-4. Deploy mínimo (API + DB en Render, front en Vercel).
+1. **Recorrido ejecutable PICKUP (caso B):** React → Spring Boot → JPA → PostgreSQL → máquina de estados → historial, con login JWT. — **hecho**.
+2. ~~Entrevistar 3–5 cadetes y consultar la regla de cancelación a comercios.~~
+3. ~~Si se valida COURIER: caso A (DELIVERY) con **prueba concurrente real** al tomar la entrega (dos cadetes simultáneos → exactamente uno la obtiene, el otro recibe conflicto).~~
+4. Deploy mínimo (API + DB en Render, front en Vercel). — pendiente.
+
+**Actualización para la entrega final:** las entrevistas a cadetes no se concretaron antes del cierre de la materia. Se decidió cerrar el alcance de esta entrega en **PICKUP únicamente**; los puntos 2 y 3 quedan fuera de este trabajo final (no como P1 de una próxima entrega). Ver [06-alcance-final.md](06-alcance-final.md).
