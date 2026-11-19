@@ -2,6 +2,8 @@ package ar.urbandelivery.auth;
 
 import ar.urbandelivery.auth.AuthDtos.LoginRequest;
 import ar.urbandelivery.auth.AuthDtos.LoginResponse;
+import ar.urbandelivery.auth.AuthDtos.MerchantRegistration;
+import ar.urbandelivery.auth.AuthDtos.RegisterRequest;
 import ar.urbandelivery.auth.AuthDtos.UserInfo;
 import ar.urbandelivery.common.ApiException;
 import ar.urbandelivery.merchant.Merchant;
@@ -41,6 +43,34 @@ public class AuthService {
 		return new LoginResponse(token.value(), token.expiresAt(), toUserInfo(user));
 	}
 
+	/** Alta propia: CLIENT queda operativo al toque; MERCHANT queda PENDING hasta que el ADMIN lo apruebe. */
+	@Transactional
+	public LoginResponse register(RegisterRequest request) {
+		if (request.role() != Role.CLIENT && request.role() != Role.MERCHANT) {
+			throw ApiException.badRequest("INVALID_ROLE", "Solo podés registrarte como cliente o comercio");
+		}
+		String email = request.email().trim();
+		if (users.findByEmailIgnoreCase(email).isPresent()) {
+			throw ApiException.conflict("EMAIL_TAKEN", "Ya existe una cuenta con ese email");
+		}
+		if (request.role() == Role.MERCHANT && request.merchant() == null) {
+			throw ApiException.badRequest("MERCHANT_DATA_REQUIRED", "Faltan los datos del comercio");
+		}
+
+		User user = User.register(email, passwordEncoder.encode(request.password()), request.fullName().trim(),
+				blankToNull(request.phone()), request.role());
+		users.save(user);
+
+		if (request.role() == Role.MERCHANT) {
+			MerchantRegistration m = request.merchant();
+			merchants.save(Merchant.register(user, m.name().trim(), blankToNull(m.category()), m.address().trim(),
+					blankToNull(m.phone()), blankToNull(m.openingHours())));
+		}
+
+		JwtService.IssuedToken token = jwtService.issue(user);
+		return new LoginResponse(token.value(), token.expiresAt(), toUserInfo(user));
+	}
+
 	@Transactional(readOnly = true)
 	public UserInfo me(AuthenticatedUser current) {
 		User user = users.findById(current.id()).orElseThrow(() -> ApiException.notFound("Usuario inexistente"));
@@ -52,6 +82,10 @@ public class AuthService {
 				? merchants.findByOwnerId(user.getId()).map(Merchant::getId).orElse(null)
 				: null;
 		return new UserInfo(user.getId(), user.getEmail(), user.getFullName(), user.getRole(), merchantId);
+	}
+
+	private static String blankToNull(String value) {
+		return value == null || value.isBlank() ? null : value.trim();
 	}
 
 }

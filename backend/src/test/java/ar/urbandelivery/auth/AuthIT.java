@@ -61,4 +61,71 @@ class AuthIT {
 			.andExpect(jsonPath("$[?(@.name == 'Verdulería Don José')]").isEmpty());
 	}
 
+	@Test
+	void clientRegistersAndIsOperativeRightAway() throws Exception {
+		String email = "cliente-it-" + System.nanoTime() + "@urbandelivery.local";
+		String body = mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"email": "%s", "password": "demo1234", "fullName": "Cliente de prueba", "role": "CLIENT"}
+						""".formatted(email)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.user.role").value("CLIENT"))
+			.andExpect(jsonPath("$.user.merchantId").doesNotExist())
+			.andReturn().getResponse().getContentAsString();
+		String token = JsonPath.read(body, "$.token");
+
+		mvc.perform(get("/api/orders/mine").header("Authorization", "Bearer " + token)).andExpect(status().isOk());
+	}
+
+	@Test
+	void merchantRegistersPendingAndOnlyAppearsAfterApproval() throws Exception {
+		String merchantEmail = "comercio-it-" + System.nanoTime() + "@urbandelivery.local";
+		String body = mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"email": "%s", "password": "demo1234", "fullName": "Dueña de prueba", "role": "MERCHANT",
+						 "merchant": {"name": "Almacén de prueba", "address": "Calle Falsa 123"}}
+						""".formatted(merchantEmail)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.user.role").value("MERCHANT"))
+			.andExpect(jsonPath("$.user.merchantId").isNumber())
+			.andReturn().getResponse().getContentAsString();
+		long merchantId = ((Number) JsonPath.read(body, "$.user.merchantId")).longValue();
+
+		// Pendiente: no aparece en el catálogo público todavía
+		mvc.perform(get("/api/merchants"))
+			.andExpect(jsonPath("$[?(@.id == " + merchantId + ")]").isEmpty());
+
+		String admin = token("admin@urbandelivery.local");
+		mvc.perform(post("/api/admin/merchants/" + merchantId + "/approve").header("Authorization", "Bearer " + admin))
+			.andExpect(status().isOk());
+
+		mvc.perform(get("/api/merchants"))
+			.andExpect(jsonPath("$[?(@.id == " + merchantId + ")]").exists());
+	}
+
+	@Test
+	void registerRejectsDuplicateEmailAndNonPublicRoles() throws Exception {
+		mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"email": "cliente@urbandelivery.local", "password": "demo1234", "fullName": "X", "role": "CLIENT"}
+						"""))
+			.andExpect(status().isConflict())
+			.andExpect(jsonPath("$.code").value("EMAIL_TAKEN"));
+
+		mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"email": "nuevo-admin@urbandelivery.local", "password": "demo1234", "fullName": "X", "role": "ADMIN"}
+						"""))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.code").value("INVALID_ROLE"));
+	}
+
+	private String token(String email) throws Exception {
+		String body = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"email\": \"" + email + "\", \"password\": \"demo1234\"}"))
+			.andExpect(status().isOk())
+			.andReturn().getResponse().getContentAsString();
+		return JsonPath.read(body, "$.token");
+	}
+
 }

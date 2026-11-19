@@ -14,6 +14,22 @@ export interface LoginResponse {
   user: UserInfo
 }
 
+/** Alta propia. `merchant` solo se manda cuando `role` es MERCHANT. */
+export interface RegisterRequest {
+  email: string
+  password: string
+  fullName: string
+  phone?: string
+  role: 'CLIENT' | 'MERCHANT'
+  merchant?: {
+    name: string
+    category?: string
+    address: string
+    phone?: string
+    openingHours?: string
+  }
+}
+
 export interface Merchant {
   id: number
   name: string

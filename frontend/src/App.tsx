@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { RequireRole } from './auth/RequireRole'
 import { Layout } from './components/Layout'
 import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
 import { CatalogPage } from './pages/client/CatalogPage'
 import { MerchantsPage } from './pages/client/MerchantsPage'
 import { MyOrdersPage } from './pages/client/MyOrdersPage'
@@ -15,6 +16,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/registro" element={<RegisterPage />} />
         <Route path="/comercios" element={<RequireRole role="CLIENT"><MerchantsPage /></RequireRole>} />
         <Route path="/comercios/:merchantId" element={<RequireRole role="CLIENT"><CatalogPage /></RequireRole>} />
         <Route path="/mis-pedidos" element={<RequireRole role="CLIENT"><MyOrdersPage /></RequireRole>} />

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { homeFor } from '../auth/home'
 import { Button, Card, ErrorMessage } from '../components/ui'
@@ -55,6 +55,9 @@ export function LoginPage() {
             {submitting ? 'Ingresando…' : 'Ingresar'}
           </Button>
         </form>
+        <p className="mt-4 text-center text-sm text-stone-600">
+          ¿No tenés cuenta? <Link to="/registro" className="font-semibold text-emerald-700 hover:underline">Registrate</Link>
+        </p>
         <div className="mt-6 border-t border-stone-200 pt-5 text-sm text-stone-600">
           <p className="mb-3">Usuarios de demostración (contraseña <code>demo1234</code>):</p>
           <div className="flex flex-wrap gap-2">

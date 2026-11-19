@@ -44,6 +44,18 @@ public class User {
 	protected User() {
 	}
 
+	/** Alta propia (registro). {@code role} ya viene validado en CLIENT o MERCHANT. */
+	public static User register(String email, String passwordHash, String fullName, String phone, Role role) {
+		User user = new User();
+		user.email = email;
+		user.passwordHash = passwordHash;
+		user.fullName = fullName;
+		user.phone = phone;
+		user.role = role;
+		user.active = true;
+		return user;
+	}
+
 	public Long getId() {
 		return id;
 	}

@@ -24,9 +24,9 @@ Como la entrega final es, en los hechos, el último hito del cursado — despué
 - El esquema de `deliveries` y `courier_profiles` descrito en [04-modelo-er.md](04-modelo-er.md) **no se creó** en la base; `backend/src/main/resources/db/migration` solo tiene las tablas del caso PICKUP/rechazo.
 - No hay bandeja de cadete, ni asignación de entregas, ni prueba de concurrencia entre couriers.
 - Los "mandados generales" (P1 desde la 2.ª devolución) tampoco se implementan.
-- Lo que **sí** se demuestra, probado de punta a punta (18 tests en verde, backend + integración):
-  - Login JWT por rol.
-  - Alta de comercio pendiente → **ADMIN aprueba o rechaza** (módulo de moderación).
+- Lo que **sí** se demuestra, probado de punta a punta (21 tests en verde, backend + integración):
+  - Login JWT por rol; registro propio de cliente o comercio (`/registro`).
+  - Alta de comercio pendiente (por registro o por dato semilla) → **ADMIN aprueba o rechaza** (módulo de moderación).
   - Cliente arma carrito mono-comercio y crea un pedido de retiro.
   - Comercio acepta, prepara, marca listo; cliente retira. Historial completo de trazabilidad.
   - Casos de rechazo (sin motivo → error; con motivo → `REJECTED`) y cancelación según quién y en qué estado.
@@ -38,6 +38,6 @@ Esto cubre los 4 criterios de éxito de la demo descritos en [01-propuesta.md §
 Al escribir "objetivos y alcance" y "resultados y conclusiones" del informe, esto se redacta como:
 
 - **Implementado y probado:** todo lo del punto 3.
-- **Fuera de alcance / evolución futura (no implementado, no simulado):** reparto con cadetes independientes (DELIVERY), mandados generales, registro propio de usuarios/comercios (hoy solo altas por datos semilla), pagos online, geolocalización, notificaciones push/chat — estos últimos ya estaban fuera de alcance desde la propuesta inicial.
+- **Fuera de alcance / evolución futura (no implementado, no simulado):** reparto con cadetes independientes (DELIVERY), mandados generales, pagos online, geolocalización, notificaciones push/chat — estos últimos ya estaban fuera de alcance desde la propuesta inicial.
 
 No debe presentarse el reparto con cadetes como "P1 si alcanza el tiempo": a esta altura, no alcanza el tiempo, y así se documenta.

@@ -88,7 +88,7 @@ Paquetes por módulo (según [docs/05](../docs/05-modulos.md)), cada uno con `co
 ```
 ar.urbandelivery
 ├── common    ApiException, GlobalExceptionHandler (ProblemDetail), Clock y OpenAPI
-├── auth      Login, emisión/validación de JWT, SecurityConfig, AuthenticatedUser
+├── auth      Login, registro, emisión/validación de JWT, SecurityConfig, AuthenticatedUser
 ├── user      User, Role
 ├── merchant  Merchant, listado de comercios aprobados, moderación (approve/reject)
 ├── catalog   Product, catálogo público y disponibilidad para el comercio
@@ -114,6 +114,7 @@ Todos bajo `/api`. Salvo login y lectura de comercios/catálogo, requieren `Auth
 | Método | Ruta | Rol | Qué hace |
 |---|---|---|---|
 | POST | `/auth/login` | público | `{email, password}` → `{token, expiresAt, user}` |
+| POST | `/auth/register` | público | `{email, password, fullName, phone?, role, merchant?}` → igual que login, con JWT inmediato. `role` solo CLIENT o MERCHANT; `merchant` obligatorio si `role=MERCHANT` (queda `PENDING`) |
 | GET | `/auth/me` | autenticado | Datos del usuario del token (incluye `merchantId` si es comercio) |
 | GET | `/merchants` | público | Comercios aprobados |
 | GET | `/merchants/{id}` | público | Detalle de un comercio aprobado |
@@ -142,6 +143,8 @@ Todas las respuestas de error son `application/problem+json` (RFC 9457) con una 
 | 400 | `VALIDATION_ERROR` | Falla Bean Validation; detalle por campo en `errors` |
 | 400 | `MALFORMED_REQUEST` | JSON inválido |
 | 400 | `REASON_REQUIRED` | Rechazo o cancelación del comercio sin motivo |
+| 400 | `INVALID_ROLE` | Registro con `role` distinto de CLIENT/MERCHANT |
+| 400 | `MERCHANT_DATA_REQUIRED` | Registro `role=MERCHANT` sin el objeto `merchant` |
 | 401 | `BAD_CREDENTIALS` | Login incorrecto (mismo mensaje si falla el email o la contraseña) |
 | 401 | — | Sin token o token vencido/inválido |
 | 403 | `FORBIDDEN` | Rol incorrecto o el recurso no es del usuario |
@@ -151,6 +154,7 @@ Todas las respuestas de error son `application/problem+json` (RFC 9457) con una 
 | 409 | `USE_REJECT` | El comercio quiere "cancelar" un pedido `PENDING` (se rechaza, no se cancela) |
 | 409 | `NOT_PICKUP` | `complete` sobre un pedido que no es de retiro |
 | 409 | `CONCURRENT_MODIFICATION` | Otra operación modificó el pedido al mismo tiempo |
+| 409 | `EMAIL_TAKEN` | Registro con un email que ya tiene cuenta |
 | 422 | `DELIVERY_NOT_AVAILABLE` | Se pidió envío; todavía no está habilitado |
 | 422 | `PICKUP_NOT_OFFERED` | El comercio no ofrece retiro |
 | 422 | `PRODUCT_NOT_IN_MERCHANT` | El producto es de otro comercio (pedido mono-comercio) |
@@ -173,14 +177,14 @@ Para correrlos contra una base existente sin Testcontainers:
 | Test | Qué cubre |
 |---|---|
 | `OrderStatusTest` | Todas las transiciones permitidas y prohibidas coinciden con docs/03 §2 |
-| `AuthIT` | El login devuelve un JWT que identifica al usuario; contraseña incorrecta, token ausente o falsificado → 401; el catálogo público no pide token |
+| `AuthIT` | El login devuelve un JWT que identifica al usuario; contraseña incorrecta, token ausente o falsificado → 401; el catálogo público no pide token; registro de CLIENT queda operativo al toque; registro de MERCHANT queda `PENDING` y recién aparece en `/merchants` tras la aprobación del ADMIN; email duplicado → 409; registro con rol ADMIN → 400 |
 | `PickupOrderFlowIT` | Caso B completo con 4 filas de historial y actores correctos; caso C (rechazo sin motivo → 400, con motivo → `REJECTED`); el cliente cancela en `PENDING` pero no en `PREPARING`; el comercio cancela un pedido aceptado con motivo pero un `PENDING` se rechaza; otro comercio no puede actuar → 403; transición inválida → 409; producto no disponible, producto de otro comercio y DELIVERY → 422; un comercio no puede crear pedidos → 403; **dos aceptaciones simultáneas del mismo pedido → exactamente una 200 y una 409** |
 | `AdminMerchantModerationIT` | ADMIN aprueba un comercio `PENDING` y recién ahí aparece en `/merchants`; rechazo lo deja oculto; un rol distinto de ADMIN recibe 403; aprobar dos veces el mismo comercio → 409 |
 
-18 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
+21 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
 
 ## Próximos pasos
 
 **Entrega final: V1 solo PICKUP** (ver [docs/06-alcance-final.md](../docs/06-alcance-final.md)). El reparto con cadetes no se implementa en este trabajo final: la migración de `courier_profiles`/`deliveries`, el slice DELIVERY (caso A), la bandeja del cadete y el test concurrente de asignación quedan documentados como evolución futura, no como trabajo pendiente de esta entrega.
 
-Pendiente real para el cierre: alta propia de usuarios/comercios (hoy solo por datos semilla) y deploy (API + DB en Render, front en Vercel).
+Pendiente real para el cierre: deploy (API + DB en Render, front en Vercel) — ver [docs/07-deploy.md](../docs/07-deploy.md).

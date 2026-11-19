@@ -44,6 +44,8 @@ Variantes: rechazar o cancelar (pide motivo), cancelar desde el cliente mientras
 
 **Admin** (`admin@urbandelivery.local`): *Comercios pendientes* → el comercio de demo sin aprobar (dueño `pendiente@urbandelivery.local`) aparece ahí → *Aprobar* → recién ahí aparece en el listado público de comercios (`/comercios` como cliente).
 
+**Registro** (`/registro`, sin sesión): elegir *Soy un comercio*, completar el formulario → queda logueado al toque como MERCHANT, pero el comercio recién aparece en `/comercios` después de que el admin lo apruebe desde *Comercios pendientes* (mismo circuito que arriba).
+
 ## Estructura
 
 ```
@@ -65,6 +67,7 @@ src/
 ├── components/         Layout, StatusBadge, Card, Button, ErrorMessage, OrderItems
 └── pages/
     ├── LoginPage.tsx
+    ├── RegisterPage.tsx
     ├── client/         MerchantsPage, CatalogPage, MyOrdersPage, OrderDetailPage
     ├── merchant/        MerchantOrdersPage, MerchantProductsPage
     └── admin/           AdminMerchantsPage
@@ -75,6 +78,7 @@ src/
 | Ruta | Rol | Pantalla |
 |---|---|---|
 | `/login` | — | Login |
+| `/registro` | — | Alta de cliente o comercio |
 | `/comercios` | CLIENT | Comercios aprobados |
 | `/comercios/:merchantId` | CLIENT | Catálogo + carrito (un solo comercio por pedido) |
 | `/mis-pedidos` | CLIENT | Pedidos del cliente |

@@ -65,7 +65,7 @@ pnpm install
 pnpm dev
 ```
 
-Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`, `pendiente@urbandelivery.local` (comercio sin aprobar) y `admin@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`; no hay todavía una pantalla de registro propio, las altas nuevas se hacen cargando filas en esa migración.
+Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`, `pendiente@urbandelivery.local` (comercio sin aprobar) y `admin@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`. También se puede crear una cuenta nueva (cliente o comercio) desde `/registro`; un comercio nuevo queda `PENDING` hasta que el ADMIN lo aprueba en `/admin/comercios`.
 
 Detalle de configuración, problemas comunes y recorrido de prueba en [backend/README.md](backend/README.md) y [frontend/README.md](frontend/README.md).
 
@@ -85,7 +85,9 @@ Detalle de configuración, problemas comunes y recorrido de prueba en [backend/R
 
 **Moderación (ADMIN):** altas de comercio en `PENDING` → el ADMIN aprueba o rechaza desde `/admin/comercios`; recién ahí el comercio aparece en el catálogo público.
 
-`./mvnw verify`: 18 tests en verde con Testcontainers.
+**Registro propio:** `/registro` da de alta cliente o comercio (con JWT inmediato); un comercio nuevo entra `PENDING` y sigue el mismo circuito de moderación de arriba.
+
+`./mvnw verify`: 21 tests en verde con Testcontainers.
 
 **Entrega final (Nov 2026): alcance cerrado en V1 solo PICKUP** — ver [docs/06-alcance-final.md](docs/06-alcance-final.md). El reparto con cadetes (caso A, DELIVERY) no se implementa en este trabajo final; queda documentado como evolución futura, no como P1 pendiente.
 

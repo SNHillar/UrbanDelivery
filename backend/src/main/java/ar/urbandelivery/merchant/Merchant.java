@@ -68,6 +68,26 @@ public class Merchant {
 	protected Merchant() {
 	}
 
+	/**
+	 * Alta propia (registro). Entrega final V1 solo PICKUP (docs/06): siempre retiro en el
+	 * local, sin envío ni costo de envío. Queda {@code PENDING} hasta que el ADMIN lo apruebe.
+	 */
+	public static Merchant register(User owner, String name, String category, String address, String phone,
+			String openingHours) {
+		Merchant merchant = new Merchant();
+		merchant.owner = owner;
+		merchant.name = name;
+		merchant.category = category;
+		merchant.address = address;
+		merchant.phone = phone;
+		merchant.openingHours = openingHours;
+		merchant.offersPickup = true;
+		merchant.offersDelivery = false;
+		merchant.deliveryFee = BigDecimal.ZERO;
+		merchant.approvalStatus = ApprovalStatus.PENDING;
+		return merchant;
+	}
+
 	public boolean isOwnedBy(Long userId) {
 		return owner.getId().equals(userId);
 	}

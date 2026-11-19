@@ -2,6 +2,7 @@ package ar.urbandelivery.auth;
 
 import ar.urbandelivery.auth.AuthDtos.LoginRequest;
 import ar.urbandelivery.auth.AuthDtos.LoginResponse;
+import ar.urbandelivery.auth.AuthDtos.RegisterRequest;
 import ar.urbandelivery.auth.AuthDtos.UserInfo;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,11 @@ public class AuthController {
 	@PostMapping("/login")
 	public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 		return authService.login(request);
+	}
+
+	@PostMapping("/register")
+	public LoginResponse register(@Valid @RequestBody RegisterRequest request) {
+		return authService.register(request);
 	}
 
 	@GetMapping("/me")
