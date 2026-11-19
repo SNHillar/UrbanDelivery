@@ -52,28 +52,28 @@ export function CatalogPage() {
   const total = lines.reduce((sum, p) => sum + p.price * cart[p.id], 0)
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{merchant.data?.name ?? '…'}</h1>
-        <p className="text-sm text-stone-600">{merchant.data?.address} · Retiro en el local</p>
+        <h1 className="text-3xl font-extrabold tracking-tight">{merchant.data?.name ?? '…'}</h1>
+        <p className="mt-1 text-sm text-stone-600">{merchant.data?.address} · Retiro en el local</p>
       </div>
       <ErrorMessage error={merchant.error ?? products.error} />
 
-      <div className="space-y-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {products.data?.map((product) => (
           <Card key={product.id}>
             <div className="flex items-center justify-between gap-3">
               <div className={product.available ? '' : 'opacity-50'}>
-                <h2 className="font-medium">{product.name}</h2>
+                <h2 className="text-base font-bold">{product.name}</h2>
                 {product.description && <p className="text-xs text-stone-500">{product.description}</p>}
-                <p className="text-sm tabular-nums">{formatMoney(product.price)}</p>
+                <p className="mt-1 text-sm tabular-nums font-medium">{formatMoney(product.price)}</p>
               </div>
               {product.available ? (
                 <div className="flex items-center gap-2">
                   {cart[product.id] && (
                     <>
                       <Button variant="secondary" onClick={() => change(product.id, -1)} aria-label="Quitar uno">−</Button>
-                      <span className="w-5 text-center tabular-nums">{cart[product.id]}</span>
+                      <span className="w-6 text-center text-base font-semibold tabular-nums">{cart[product.id]}</span>
                     </>
                   )}
                   <Button variant="secondary" onClick={() => change(product.id, 1)} aria-label="Agregar uno">+</Button>
@@ -88,8 +88,8 @@ export function CatalogPage() {
 
       {lines.length > 0 && (
         <Card>
-          <h2 className="mb-2 font-semibold">Tu pedido</h2>
-          <ul className="text-sm">
+          <h2 className="mb-3 text-lg font-bold">Tu pedido</h2>
+          <ul className="space-y-1 text-sm">
             {lines.map((p) => (
               <li key={p.id} className="flex justify-between">
                 <span>{cart[p.id]} × {p.name}</span>
@@ -97,16 +97,16 @@ export function CatalogPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-2 flex justify-between border-t border-stone-200 pt-2 font-semibold">
+          <p className="mt-3 flex justify-between border-t border-stone-200 pt-3 text-lg font-bold">
             <span>Total</span>
             <span className="tabular-nums">{formatMoney(total)}</span>
           </p>
           <p className="mt-1 text-xs text-stone-500">El pago se arregla con el comercio al retirar. UrbanDelivery no cobra los productos.</p>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={2}
             placeholder="Notas para el comercio (opcional)"
-            className="mt-3 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm" />
+            className="mt-4 w-full rounded-xl border border-stone-300 px-3 py-2 text-sm" />
           <ErrorMessage error={placeOrder.error} />
-          <Button className="mt-2 w-full" disabled={placeOrder.isPending} onClick={() => placeOrder.mutate()}>
+          <Button className="mt-3 w-full py-3 text-base" disabled={placeOrder.isPending} onClick={() => placeOrder.mutate()}>
             {placeOrder.isPending ? 'Enviando…' : 'Hacer pedido para retirar'}
           </Button>
         </Card>

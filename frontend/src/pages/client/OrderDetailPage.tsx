@@ -29,27 +29,27 @@ export function OrderDetailPage() {
   const { order, history } = data
 
   return (
-    <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">Pedido #{order.id}</h1>
+    <section className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-extrabold tracking-tight">Pedido #{order.id}</h1>
         <StatusBadge status={order.status} label={order.statusLabel} />
       </div>
 
       {order.status === 'READY' && (
-        <p className="rounded-lg bg-emerald-50 p-3 text-emerald-900">
+        <p className="rounded-xl bg-emerald-50 p-4 text-emerald-900">
           ¡Listo! Podés retirarlo en <strong>{order.merchantName}</strong>, {order.merchantAddress}.
         </p>
       )}
-      {order.statusReason && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-800">Motivo: {order.statusReason}</p>}
+      {order.statusReason && <p className="rounded-xl bg-red-50 p-4 text-sm text-red-800">Motivo: {order.statusReason}</p>}
 
       <Card>
-        <h2 className="mb-2 font-semibold">{order.merchantName}</h2>
+        <h2 className="mb-3 text-lg font-bold">{order.merchantName}</h2>
         <OrderItems order={order} />
       </Card>
 
       <Card>
-        <h2 className="mb-2 font-semibold">Seguimiento</h2>
-        <ol className="space-y-1 text-sm">
+        <h2 className="mb-3 text-lg font-bold">Seguimiento</h2>
+        <ol className="space-y-2 text-sm">
           {history.map((change, index) => (
             <li key={index} className="flex justify-between gap-3">
               <span>

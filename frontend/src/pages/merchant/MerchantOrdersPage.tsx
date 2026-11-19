@@ -52,26 +52,27 @@ export function MerchantOrdersPage() {
   }
 
   return (
-    <section className="space-y-5">
-      <h1 className="text-2xl font-bold">Pedidos</h1>
+    <section className="space-y-8">
+      <h1 className="text-3xl font-extrabold tracking-tight">Pedidos</h1>
       <ErrorMessage error={active.error ?? act.error} />
 
       {SECTIONS.map(({ status, title }) => {
         const orders = active.data?.filter((o) => o.status === status) ?? []
         return (
-          <div key={status} className="space-y-2">
-            <h2 className="font-semibold text-stone-700">{title} ({orders.length})</h2>
-            {orders.map((order) => (
-              <Card key={order.id}>
-                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <span className="font-semibold">#{order.id} · {order.clientName}</span>
-                    {order.clientPhone && <span className="text-sm text-stone-500"> · {order.clientPhone}</span>}
+          <div key={status} className="space-y-3">
+            <h2 className="text-lg font-bold text-stone-700">{title} ({orders.length})</h2>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {orders.map((order) => (
+                <Card key={order.id}>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <span className="text-base font-bold">#{order.id} · {order.clientName}</span>
+                      {order.clientPhone && <span className="text-sm text-stone-500"> · {order.clientPhone}</span>}
+                    </div>
+                    <span className="text-xs text-stone-500">{formatDateTime(order.createdAt)}</span>
                   </div>
-                  <span className="text-xs text-stone-500">{formatDateTime(order.createdAt)}</span>
-                </div>
-                <OrderItems order={order} />
-                <div className="mt-3 flex flex-wrap gap-2">
+                  <OrderItems order={order} />
+                  <div className="mt-4 flex flex-wrap gap-2">
                   {status === 'PENDING' && (
                     <>
                       <Button disabled={act.isPending} onClick={() => run(order.id, 'accept')}>Aceptar</Button>
@@ -88,8 +89,9 @@ export function MerchantOrdersPage() {
                     <Button variant="danger" disabled={act.isPending} onClick={() => run(order.id, 'cancel')}>Cancelar</Button>
                   )}
                 </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
         )
       })}

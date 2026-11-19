@@ -13,24 +13,26 @@ export function MyOrdersPage() {
   })
 
   return (
-    <section className="space-y-3">
-      <h1 className="text-2xl font-bold">Mis pedidos</h1>
+    <section className="space-y-6">
+      <h1 className="text-3xl font-extrabold tracking-tight">Mis pedidos</h1>
       {isPending && <p className="text-stone-500">Cargando…</p>}
       <ErrorMessage error={error} />
       {orders?.length === 0 && <p className="text-stone-500">Todavía no hiciste pedidos.</p>}
-      {orders?.map((order) => (
-        <Link key={order.id} to={`/mis-pedidos/${order.id}`} className="block">
-          <Card>
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="font-semibold">#{order.id} · {order.merchantName}</h2>
-              <StatusBadge status={order.status} label={order.statusLabel} />
-            </div>
-            <p className="text-sm text-stone-600">
-              {formatDateTime(order.createdAt)} · {formatMoney(order.total)}
-            </p>
-          </Card>
-        </Link>
-      ))}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {orders?.map((order) => (
+          <Link key={order.id} to={`/mis-pedidos/${order.id}`} className="block">
+            <Card interactive>
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="text-lg font-bold">#{order.id} · {order.merchantName}</h2>
+                <StatusBadge status={order.status} label={order.statusLabel} />
+              </div>
+              <p className="mt-1 text-sm text-stone-600">
+                {formatDateTime(order.createdAt)} · {formatMoney(order.total)}
+              </p>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </section>
   )
 }

@@ -19,24 +19,26 @@ export function MerchantProductsPage() {
   })
 
   return (
-    <section className="space-y-3">
-      <h1 className="text-2xl font-bold">Productos</h1>
+    <section className="space-y-6">
+      <h1 className="text-3xl font-extrabold tracking-tight">Productos</h1>
       <ErrorMessage error={products.error ?? toggle.error} />
-      {products.data?.map((product) => (
-        <Card key={product.id}>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 className="font-medium">{product.name}</h2>
-              <p className="text-sm tabular-nums text-stone-600">{formatMoney(product.price)}</p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {products.data?.map((product) => (
+          <Card key={product.id}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-bold">{product.name}</h2>
+                <p className="mt-1 text-sm tabular-nums font-medium text-stone-600">{formatMoney(product.price)}</p>
+              </div>
+              <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+                <input type="checkbox" checked={product.available} disabled={toggle.isPending}
+                  onChange={() => toggle.mutate(product)} className="h-5 w-5 accent-emerald-700" />
+                {product.available ? 'Disponible' : 'No disponible'}
+              </label>
             </div>
-            <label className="flex cursor-pointer items-center gap-2 text-sm">
-              <input type="checkbox" checked={product.available} disabled={toggle.isPending}
-                onChange={() => toggle.mutate(product)} className="h-4 w-4 accent-emerald-700" />
-              {product.available ? 'Disponible' : 'No disponible'}
-            </label>
-          </div>
-        </Card>
-      ))}
+          </Card>
+        ))}
+      </div>
     </section>
   )
 }

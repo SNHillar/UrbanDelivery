@@ -11,11 +11,17 @@ const statusColors: Record<OrderStatus, string> = {
 }
 
 export function StatusBadge({ status, label }: { status: OrderStatus; label: string }) {
-  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColors[status]}`}>{label}</span>
+  return <span className={`rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase ${statusColors[status]}`}>{label}</span>
 }
 
-export function Card({ children }: { children: ReactNode }) {
-  return <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">{children}</div>
+export function Card({ children, interactive = false }: { children: ReactNode; interactive?: boolean }) {
+  return (
+    <div
+      className={`rounded-2xl border border-stone-200 bg-white p-6 shadow-sm ${interactive ? 'transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md' : ''}`}
+    >
+      {children}
+    </div>
+  )
 }
 
 type Variant = 'primary' | 'secondary' | 'danger'
@@ -30,7 +36,7 @@ export function Button({ variant = 'primary', className = '', ...props }: Button
   return (
     <button
       {...props}
-      className={`rounded-lg px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${className}`}
+      className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${className}`}
     />
   )
 }

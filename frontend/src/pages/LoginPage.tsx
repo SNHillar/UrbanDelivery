@@ -36,27 +36,27 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto mt-10 max-w-sm">
+    <div className="mx-auto mt-6 max-w-md sm:mt-16">
       <Card>
-        <h1 className="mb-4 text-xl font-bold">Ingresar</h1>
-        <form onSubmit={submit} className="space-y-3">
-          <label className="block text-sm">
+        <h1 className="mb-6 text-2xl font-extrabold tracking-tight">Ingresar</h1>
+        <form onSubmit={submit} className="space-y-4">
+          <label className="block text-sm font-medium">
             Email
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2" />
+              className="mt-1 w-full rounded-xl border border-stone-300 px-4 py-2.5" />
           </label>
-          <label className="block text-sm">
+          <label className="block text-sm font-medium">
             Contraseña
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2" />
+              className="mt-1 w-full rounded-xl border border-stone-300 px-4 py-2.5" />
           </label>
           <ErrorMessage error={error} />
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" disabled={submitting} className="w-full py-3 text-base">
             {submitting ? 'Ingresando…' : 'Ingresar'}
           </Button>
         </form>
-        <div className="mt-5 border-t border-stone-200 pt-4 text-sm text-stone-600">
-          <p className="mb-2">Usuarios de demostración (contraseña <code>demo1234</code>):</p>
+        <div className="mt-6 border-t border-stone-200 pt-5 text-sm text-stone-600">
+          <p className="mb-3">Usuarios de demostración (contraseña <code>demo1234</code>):</p>
           <div className="flex flex-wrap gap-2">
             {DEMO_USERS.map((demo) => (
               <Button key={demo.email} variant="secondary" type="button"

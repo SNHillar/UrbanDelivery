@@ -22,32 +22,34 @@ export function AdminMerchantsPage() {
   })
 
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-bold">Comercios pendientes</h1>
+    <section className="space-y-6">
+      <h1 className="text-3xl font-extrabold tracking-tight">Comercios pendientes</h1>
       <ErrorMessage error={pending.error ?? act.error} />
 
       {pending.data?.length === 0 && (
         <p className="text-sm text-stone-500">No hay altas de comercio esperando aprobación.</p>
       )}
 
-      {pending.data?.map((merchant) => (
-        <Card key={merchant.id}>
-          <div className="mb-2">
-            <h2 className="font-semibold">{merchant.name}</h2>
-            <p className="text-sm text-stone-600">{merchant.category} · {merchant.address}</p>
-            <p className="text-xs text-stone-500">Dueño: {merchant.ownerFullName} · {merchant.ownerEmail}</p>
-          </div>
-          <div className="flex gap-2">
-            <Button disabled={act.isPending} onClick={() => act.mutate({ merchantId: merchant.id, action: 'approve' })}>
-              Aprobar
-            </Button>
-            <Button variant="danger" disabled={act.isPending}
-              onClick={() => act.mutate({ merchantId: merchant.id, action: 'reject' })}>
-              Rechazar
-            </Button>
-          </div>
-        </Card>
-      ))}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {pending.data?.map((merchant) => (
+          <Card key={merchant.id}>
+            <div className="mb-4">
+              <h2 className="text-lg font-bold">{merchant.name}</h2>
+              <p className="mt-1 text-sm text-stone-600">{merchant.category} · {merchant.address}</p>
+              <p className="mt-1 text-xs text-stone-500">Dueño: {merchant.ownerFullName} · {merchant.ownerEmail}</p>
+            </div>
+            <div className="flex gap-2">
+              <Button disabled={act.isPending} onClick={() => act.mutate({ merchantId: merchant.id, action: 'approve' })}>
+                Aprobar
+              </Button>
+              <Button variant="danger" disabled={act.isPending}
+                onClick={() => act.mutate({ merchantId: merchant.id, action: 'reject' })}>
+                Rechazar
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
     </section>
   )
 }
