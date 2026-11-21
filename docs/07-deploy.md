@@ -39,6 +39,8 @@ Guía paso a paso para dejar el sistema disponible en línea, tal como pide la e
 3. Variable de entorno: `VITE_API_URL` = la URL de Render del paso 2, **sin** `/api` al final (ej. `https://urbandelivery-api.onrender.com`). El cliente HTTP del front ya le agrega `/api` a cada pedido.
 4. Deploy. Da una URL tipo `https://urbandelivery.vercel.app`.
 
+El repo incluye `frontend/vercel.json`, que reescribe todas las rutas a `index.html`. Hace falta porque las rutas (`/login`, `/comercios`, …) las resuelve React Router en el navegador: sin esa regla, abrir o recargar cualquier ruta que no sea la raíz devuelve `404: NOT_FOUND`.
+
 ## 4. Cerrar el CORS
 
 Volver a Render → el Web Service de la API → **Environment** → editar `CORS_ALLOWED_ORIGINS` con la URL real de Vercel del paso 3 (ej. `https://urbandelivery.vercel.app`, sin barra al final). Guardar: Render redeploya solo. Sin este paso el front carga pero los pedidos al API fallan por CORS.

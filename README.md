@@ -2,6 +2,8 @@
 
 Plataforma web de pedidos para comercios de pueblos del interior: catálogo digital, carrito mono-comercio y seguimiento del pedido hasta el retiro en el local.
 
+**Sistema desplegado:** https://urban-delivery-three.vercel.app — usuarios de demostración más abajo (contraseña `demo1234`). La primera carga puede tardar 30–60 s: el backend en el plan gratuito de Render se duerme sin tráfico.
+
 > Trabajo final de facultad — inventiva propia. **Alcance de la entrega final: V1 solo retiro (PICKUP)** — el reparto con cadetes independientes y los mandados generales quedaron fuera de esta entrega; ver [por qué y qué significa](docs/06-alcance-final.md).
 
 ## Equipo
@@ -34,7 +36,7 @@ Plataforma web de pedidos para comercios de pueblos del interior: catálogo digi
 | Seguridad | Spring Security + JWT + roles |
 | Base de datos | PostgreSQL + Spring Data JPA |
 | Frontend | React + Tailwind CSS + TanStack Query |
-| Infra | Docker; deploy previsto en Render (API/DB) + Vercel (front) |
+| Infra | Docker; deploy en Render (API + PostgreSQL) y Vercel (front) |
 
 ## Estructura del repositorio
 
@@ -91,4 +93,4 @@ Detalle de configuración, problemas comunes y recorrido de prueba en [backend/R
 
 **Entrega final (Nov 2026): alcance cerrado en V1 solo PICKUP** — ver [docs/06-alcance-final.md](docs/06-alcance-final.md). El reparto con cadetes (caso A, DELIVERY) no se implementa en este trabajo final; queda documentado como evolución futura, no como P1 pendiente.
 
-**Deploy:** Dockerfile del backend listo y probado (arranca con el puerto por variable de entorno, conecta a una base remota, responde CORS correctamente). Pasos en [docs/07-deploy.md](docs/07-deploy.md); falta ejecutarlos en Render y Vercel.
+**Deploy:** API y PostgreSQL en Render (Docker), frontend en Vercel: https://urban-delivery-three.vercel.app. Pasos en [docs/07-deploy.md](docs/07-deploy.md).
