@@ -2,6 +2,8 @@
 
 Plataforma web de pedidos para comercios de pueblos del interior: catálogo digital, carrito mono-comercio y seguimiento del pedido hasta el retiro en el local.
 
+**Informe Final:** [docs/Informe-Final-UrbanDelivery.pdf](docs/Informe-Final-UrbanDelivery.pdf) · **Video:** https://www.youtube.com/watch?v=bnhVlSJ-ngU
+
 **Sistema desplegado:** https://urban-delivery-three.vercel.app — usuarios de demostración más abajo (contraseña `demo1234`). La primera carga puede tardar 30–60 s: el backend en el plan gratuito de Render se duerme sin tráfico.
 
 > Trabajo final de facultad — inventiva propia. **Alcance de la entrega final: V1 solo retiro (PICKUP)** — el reparto con cadetes independientes y los mandados generales quedaron fuera de esta entrega; ver [por qué y qué significa](docs/06-alcance-final.md).
@@ -16,6 +18,7 @@ Plataforma web de pedidos para comercios de pueblos del interior: catálogo digi
 
 ## Documentación
 
+- [Informe Final (PDF)](docs/Informe-Final-UrbanDelivery.pdf)
 - [Propuesta de proyecto (1.ª entrega)](docs/01-propuesta.md)
 - [Actualización post-devolución del tutor](docs/02-actualizacion.md)
 - [Casos de pedido y máquinas de estado](docs/03-casos-y-estados.md)
