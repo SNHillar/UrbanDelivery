@@ -41,6 +41,7 @@ Todo se lee de variables de entorno, con valores por defecto para desarrollo (ve
 | `DB_URL` | `jdbc:postgresql://localhost:5432/urbandelivery` | Conexión JDBC |
 | `DB_USER` / `DB_PASSWORD` | `urbandelivery` / `urbandelivery` | Credenciales (las mismas que `docker-compose.yml`) |
 | `JWT_SECRET` | secreto de desarrollo | Clave HMAC; mínimo 32 caracteres. **Cambiarlo fuera de desarrollo** |
+| `FLYWAY_LOCATIONS` | `classpath:db/migration,classpath:db/demo` | Qué migraciones corre Flyway. Producción real: `classpath:db/migration` (sin datos ni cuentas de demo) |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Orígenes del frontend |
 
 Otras decisiones de configuración:
@@ -64,7 +65,10 @@ Otras decisiones de configuración:
 Migraciones en `src/main/resources/`:
 
 - `db/migration/V1__core_schema.sql`: tablas `users`, `merchants`, `products`, `orders`, `order_items`, `order_status_history`, con los CHECK de las invariantes de [docs/04](../docs/04-modelo-er.md) §3 (DELIVERY con dirección, PICKUP sin costo de envío, rechazo con motivo, etc.). `deliveries` y `courier_profiles` **no se crean**: el reparto con cadetes queda fuera del alcance de esta entrega (ver [docs/06](../docs/06-alcance-final.md)).
-- `db/demo/V1_1__demo_data.sql`: datos de demostración. En producción se carga solo `db/migration` (cambiar `spring.flyway.locations`).
+- `db/migration/V2__v1_solo_retiro.sql`: deja todos los comercios con `offers_delivery = false` y `delivery_fee = 0`, coherente con la V1 solo retiro. Es una migración nueva porque `V1_1` (demo) puede estar ya aplicada y no se editan migraciones aplicadas. Las columnas quedan en el modelo como preparación para un futuro DELIVERY.
+- `db/demo/V1_1__demo_data.sql`: datos ficticios y cuentas de prueba (incluida una cuenta ADMIN con contraseña conocida).
+
+**Demo académica y producción real.** Por defecto Flyway carga `db/migration` **y** `db/demo`: así funcionan el entorno local y el deploy de evaluación del TFI, que es un **entorno de demostración** con datos ficticios y cuentas públicas. Una instalación productiva real debe correr solo las migraciones estructurales, con `FLYWAY_LOCATIONS=classpath:db/migration`, un `JWT_SECRET` y credenciales de base propios, y sin cuentas de demostración; el primer ADMIN se crearía a mano en la base.
 
 ### Usuarios de demostración
 
@@ -177,11 +181,11 @@ Para correrlos contra una base existente sin Testcontainers:
 | Test | Qué cubre |
 |---|---|
 | `OrderStatusTest` | Todas las transiciones permitidas y prohibidas coinciden con docs/03 §2 |
-| `AuthIT` | El login devuelve un JWT que identifica al usuario; contraseña incorrecta, token ausente o falsificado → 401; el catálogo público no pide token; registro de CLIENT queda operativo al toque; registro de MERCHANT queda `PENDING` y recién aparece en `/merchants` tras la aprobación del ADMIN; email duplicado → 409; registro con rol ADMIN → 400 |
+| `AuthIT` | El login devuelve un JWT que identifica al usuario; contraseña incorrecta, token ausente o falsificado → 401; el catálogo público no pide token y todos los comercios informan solo retiro (`offersDelivery = false`, `deliveryFee = 0`); registro de CLIENT queda operativo al toque; registro de MERCHANT queda `PENDING` y recién aparece en `/merchants` tras la aprobación del ADMIN; email duplicado → 409; registro con rol ADMIN → 400 |
 | `PickupOrderFlowIT` | Caso B completo con 4 filas de historial y actores correctos; caso C (rechazo sin motivo → 400, con motivo → `REJECTED`); el cliente cancela en `PENDING` pero no en `PREPARING`; el comercio cancela un pedido aceptado con motivo pero un `PENDING` se rechaza; otro comercio no puede actuar → 403; transición inválida → 409; producto no disponible, producto de otro comercio y DELIVERY → 422; un comercio no puede crear pedidos → 403; **dos aceptaciones simultáneas del mismo pedido → exactamente una 200 y una 409** |
-| `AdminMerchantModerationIT` | ADMIN aprueba un comercio `PENDING` y recién ahí aparece en `/merchants`; rechazo lo deja oculto; un rol distinto de ADMIN recibe 403; aprobar dos veces el mismo comercio → 409 |
+| `AdminMerchantModerationIT` | ADMIN aprueba un comercio `PENDING` y recién ahí aparece en `/merchants`; mientras está pendiente su catálogo y los pedidos de clientes devuelven 404, pero su dueño puede iniciar sesión y ver sus productos; rechazo lo deja oculto; un rol distinto de ADMIN recibe 403; aprobar dos veces el mismo comercio → 409 |
 
-21 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
+22 tests en verde, tanto con Testcontainers como contra PostgreSQL local.
 
 ## Próximos pasos
 

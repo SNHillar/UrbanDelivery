@@ -2,9 +2,11 @@
 
 Plataforma web de pedidos para comercios de pueblos del interior: catálogo digital, carrito mono-comercio y seguimiento del pedido hasta el retiro en el local.
 
+**Versión presentada:** [`v1.0.0`](https://github.com/SNHillar/UrbanDelivery/tree/v1.0.0) — el código de ese tag es el que corresponde al Informe Final, al video y al deploy.
+
 **Informe Final:** [docs/Informe-Final-UrbanDelivery.pdf](docs/Informe-Final-UrbanDelivery.pdf) · **Video:** https://www.youtube.com/watch?v=bnhVlSJ-ngU
 
-**Sistema desplegado:** https://urban-delivery-three.vercel.app — usuarios de demostración más abajo (contraseña `demo1234`). La primera carga puede tardar 30–60 s: el backend en el plan gratuito de Render se duerme sin tráfico.
+**Sistema desplegado (entorno de demostración académica):** https://urban-delivery-three.vercel.app — usuarios de demostración más abajo (contraseña `demo1234`). La primera carga puede tardar 30–60 s: el backend en el plan gratuito de Render se duerme sin tráfico.
 
 > Trabajo final de facultad — inventiva propia. **Alcance de la entrega final: V1 solo retiro (PICKUP)** — el reparto con cadetes independientes y los mandados generales quedaron fuera de esta entrega; ver [por qué y qué significa](docs/06-alcance-final.md).
 
@@ -22,8 +24,8 @@ Plataforma web de pedidos para comercios de pueblos del interior: catálogo digi
 - [Propuesta de proyecto (1.ª entrega)](docs/01-propuesta.md)
 - [Actualización post-devolución del tutor](docs/02-actualizacion.md)
 - [Casos de pedido y máquinas de estado](docs/03-casos-y-estados.md)
-- [Modelo Entidad-Relación](docs/04-modelo-er.md)
-- [Listado de módulos](docs/05-modulos.md)
+- [Modelo Entidad-Relación](docs/04-modelo-er.md): §0 es el modelo implementado (6 tablas); el resto es el diseño original, histórico
+- [Listado de módulos](docs/05-modulos.md): §0 son los módulos implementados; el resto es el diseño de la 2.ª entrega, histórico
 - [Alcance de la entrega final: V1 solo PICKUP](docs/06-alcance-final.md)
 - [Deploy: Render (API + DB) y Vercel (front)](docs/07-deploy.md)
 - [Relevamiento (Forms anónimos)](docs/relevamiento/README.md)
@@ -70,7 +72,7 @@ pnpm install
 pnpm dev
 ```
 
-Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`, `pendiente@urbandelivery.local` (comercio sin aprobar) y `admin@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`. También se puede crear una cuenta nueva (cliente o comercio) desde `/registro`; un comercio nuevo queda `PENDING` hasta que el ADMIN lo aprueba en `/admin/comercios`.
+Usuarios de demostración (contraseña `demo1234`): `cliente@urbandelivery.local`, `rotiseria@urbandelivery.local`, `farmacia@urbandelivery.local`, `pendiente@urbandelivery.local` (comercio sin aprobar) y `admin@urbandelivery.local`. Se cargan desde `backend/src/main/resources/db/demo`. Son datos ficticios para la **demo académica**, tanto local como en el deploy de evaluación; una instalación productiva real corre solo `db/migration` (`FLYWAY_LOCATIONS=classpath:db/migration`), con secretos propios y sin cuentas públicas. Ver [backend/README.md](backend/README.md#base-de-datos). También se puede crear una cuenta nueva (cliente o comercio) desde `/registro`; un comercio nuevo queda `PENDING` (no es público ni recibe pedidos, aunque su dueño puede iniciar sesión) hasta que el ADMIN lo aprueba en `/admin/comercios`.
 
 Detalle de configuración, problemas comunes y recorrido de prueba en [backend/README.md](backend/README.md) y [frontend/README.md](frontend/README.md).
 
@@ -88,12 +90,14 @@ Detalle de configuración, problemas comunes y recorrido de prueba en [backend/R
 
 **Recorrido ejecutable (caso B, PICKUP):** cliente → comercio → pedido → acepta → prepara → `READY` → retira → `COMPLETED`, con login JWT, máquina de estados e historial en la misma transacción, probado de punta a punta contra PostgreSQL.
 
-**Moderación (ADMIN):** altas de comercio en `PENDING` → el ADMIN aprueba o rechaza desde `/admin/comercios`; recién ahí el comercio aparece en el catálogo público.
+**Moderación (ADMIN):** altas de comercio en `PENDING` → el ADMIN aprueba o rechaza desde `/admin/comercios`. Mientras está pendiente, el comercio no es público y no puede recibir pedidos; su dueño sí puede iniciar sesión y ajustar la disponibilidad de sus productos (comportamiento deliberado).
 
 **Registro propio:** `/registro` da de alta cliente o comercio (con JWT inmediato); un comercio nuevo entra `PENDING` y sigue el mismo circuito de moderación de arriba.
 
-`./mvnw verify`: 21 tests en verde con Testcontainers.
+`./mvnw verify`: 22 tests en verde con Testcontainers.
 
 **Entrega final (Nov 2026): alcance cerrado en V1 solo PICKUP** — ver [docs/06-alcance-final.md](docs/06-alcance-final.md). El reparto con cadetes (caso A, DELIVERY) no se implementa en este trabajo final; queda documentado como evolución futura, no como P1 pendiente.
 
 **Deploy:** API y PostgreSQL en Render (Docker), frontend en Vercel: https://urban-delivery-three.vercel.app. Pasos en [docs/07-deploy.md](docs/07-deploy.md).
+
+**Ajustes de cierre (4.ª devolución, Nov 2026):** todos los comercios informan solo retiro (migración `V2__v1_solo_retiro.sql`); modelo final de 6 tablas y docs 04/05 separados entre lo implementado y el diseño histórico; regla precisa del comercio pendiente; diferencia explícita entre demo académica y producción real. Versión presentada: tag `v1.0.0`.

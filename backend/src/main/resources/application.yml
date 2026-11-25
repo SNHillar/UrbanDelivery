@@ -15,8 +15,9 @@ spring:
       # El esquema lo maneja Flyway; Hibernate solo verifica que las entidades coincidan.
       ddl-auto: validate
   flyway:
-    # db/demo carga usuarios, comercios y productos de ejemplo. En producción: solo db/migration.
-    locations: classpath:db/migration,classpath:db/demo
+    # Por defecto (desarrollo y demo académica) se cargan también los datos y cuentas de prueba de db/demo.
+    # Producción real: FLYWAY_LOCATIONS=classpath:db/migration (solo esquema, sin cuentas públicas).
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/demo}
   web:
     # Mensajes de validación en español, sin depender del Accept-Language del navegador
     locale: es

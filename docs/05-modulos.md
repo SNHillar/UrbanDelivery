@@ -14,6 +14,29 @@ Junto con el [modelo ER](04-modelo-er.md), este documento completa el hito **≤
 
 ---
 
+> **Documento histórico + estado final.** Las prioridades P0/P1 de las secciones 1 a 5 son las de la **2.ª entrega** (Sep 2026), cuando el reparto con cadetes todavía era P0. Al cerrar el alcance en V1 solo PICKUP ([06-alcance-final.md](06-alcance-final.md)), **Entregas (`delivery`) y todo lo referido al cadete dejaron de ser P0** y no se implementaron. Lo que realmente contiene la versión entregada está en la [§0](#0-módulos-implementados-en-la-versión-final-v1-pickup).
+
+## 0. Módulos implementados en la versión final (V1 PICKUP)
+
+| Módulo (paquete) | Qué hace en la versión entregada | Tablas |
+|------------------|----------------------------------|--------|
+| **Auth & Seguridad** (`auth`) | Login y registro propio de cliente o comercio, emisión y validación de JWT, `@PreAuthorize` por rol; la propiedad del recurso se valida en cada servicio | `users` |
+| **Usuarios** (`user`) | Cuenta única con rol `CLIENT`, `MERCHANT` o `ADMIN` | `users` |
+| **Comercios** (`merchant`) | Alta del comercio (registro o datos de demo), listado público de aprobados; todos los comercios ofrecen solo retiro | `merchants` |
+| **Moderación** (`admin`) | Bandeja de comercios pendientes; aprobar o rechazar | `merchants` |
+| **Catálogo** (`catalog`) | Listado público de productos por comercio; el comercio activa o desactiva la disponibilidad de sus productos (no crea ni edita productos desde la app) | `products` |
+| **Pedidos y máquina de estados** (`order`) | Pedido PICKUP mono-comercio con copia de nombre y precio; transiciones `PENDING → PREPARING → READY → COMPLETED`, más `REJECTED` / `CANCELLED` con motivo; bloqueo optimista | `orders`, `order_items` |
+| **Trazabilidad** (`history`) | Una fila por transición con actor y motivo, en la misma transacción; consultable por el cliente | `order_status_history` |
+| **Transversal** (`common`) | Errores con `ProblemDetail` y `code`, CORS, Swagger | — |
+
+**No implementados:** Entregas (`delivery`), perfil y bandeja del cadete, moderación de cadetes, cancelación provisoria de entregas `IN_TRANSIT` por el admin, mandados (`errand`), búsqueda y filtros, categorías. Quedan como evolución futura.
+
+**Frontend implementado:** login y registro (cliente o comercio); cliente: comercios, catálogo con carrito mono-comercio, checkout solo retiro, mis pedidos con historial; comercio: bandeja de pedidos y disponibilidad de productos; admin: comercios pendientes. Sin pantallas de cadete.
+
+---
+
+## Diseño de la 2.ª entrega (histórico)
+
 ## 1. Módulos del backend (Spring Boot, arquitectura por capas)
 
 Cada módulo es un paquete con sus capas `controller → service → repository` y sus entidades JPA. Las reglas de estado viven en el servicio (dominio rico solo en invariantes clave, según [01-propuesta.md §3](01-propuesta.md#3-arquitectura-y-tecnologías)).

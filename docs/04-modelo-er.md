@@ -1,6 +1,45 @@
 # UrbanDelivery — Modelo Entidad-Relación
 
-Construido a partir de los casos A, B y C y de las máquinas de estado de [03-casos-y-estados.md](03-casos-y-estados.md). Base: PostgreSQL con Spring Data JPA.
+> **Este documento tiene dos partes.** La [§0](#0-modelo-final-implementado-v1-pickup) describe el **modelo realmente implementado** en la versión entregada (V1 solo PICKUP, 6 tablas). Las secciones 1 a 5 son el **diseño original de la 2.ª entrega** (Sep 2026), con reparto por cadetes, y se conservan como **documento histórico**: `courier_profiles` y `deliveries` nunca se crearon. Ver [06-alcance-final.md](06-alcance-final.md).
+
+---
+
+## 0. Modelo final implementado (V1 PICKUP)
+
+Fuente de verdad: las migraciones de [`backend/src/main/resources/db/migration`](../backend/src/main/resources/db/migration) (`V1__core_schema.sql` y `V2__v1_solo_retiro.sql`). Son **6 tablas**:
+
+```mermaid
+erDiagram
+    users ||--o| merchants : "es dueño de"
+    merchants ||--o{ products : "ofrece"
+    users ||--o{ orders : "realiza (CLIENT)"
+    merchants ||--o{ orders : "recibe"
+    orders ||--|{ order_items : "contiene"
+    products ||--o{ order_items : "referenciado en"
+    orders ||--o{ order_status_history : "registra"
+    users ||--o{ order_status_history : "ejecuta"
+```
+
+| Tabla | Para qué se usa en V1 |
+|-------|-----------------------|
+| `users` | Cuenta única con rol `CLIENT`, `MERCHANT` o `ADMIN`. El valor `COURIER` existe en el `CHECK` pero ningún usuario lo usa. |
+| `merchants` | Perfil del comercio, con moderación (`approval_status`, `approved_by`, `approved_at`). |
+| `products` | Catálogo por comercio, con `available` (se puede pedir) y `active` (baja lógica). |
+| `orders` | Pedido de un solo comercio, con `status` (máquina de estados) y `version` (bloqueo optimista). |
+| `order_items` | Ítems con copia congelada de `product_name` y `unit_price`. |
+| `order_status_history` | Una fila por transición, con actor y motivo, escrita en la misma transacción que el cambio de estado. |
+
+Qué del diseño original quedó y cómo está en V1:
+
+- **No se crearon** `courier_profiles` ni `deliveries`.
+- **Columnas de DELIVERY que quedan como preparación futura**, sin uso funcional: `merchants.offers_delivery` y `merchants.delivery_fee` (todos los comercios en `false` / `0` desde la migración V2), `orders.delivery_address`, `orders.delivery_reference` y `orders.delivery_fee` (siempre `0` en PICKUP, garantizado por `CHECK`), y el valor `DELIVERY` de `orders.fulfillment_type` y de `order_status_history.entity`. El backend rechaza cualquier pedido `DELIVERY` (422).
+- **Invariantes vigentes** de la [§3](#3-invariantes): las de pedido, ítems, precios, historial y moderación aplican tal cual; las de entrega y cadete no aplican porque esa parte no se implementó.
+
+---
+
+## Diseño original (2.ª entrega, histórico)
+
+Las secciones siguientes son el modelo completo diseñado antes de cerrar el alcance en PICKUP.
 
 ---
 

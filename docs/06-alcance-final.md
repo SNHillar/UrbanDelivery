@@ -24,7 +24,7 @@ Como la entrega final es, en los hechos, el último hito del cursado — despué
 - El esquema de `deliveries` y `courier_profiles` descrito en [04-modelo-er.md](04-modelo-er.md) **no se creó** en la base; `backend/src/main/resources/db/migration` solo tiene las tablas del caso PICKUP/rechazo.
 - No hay bandeja de cadete, ni asignación de entregas, ni prueba de concurrencia entre couriers.
 - Los "mandados generales" (P1 desde la 2.ª devolución) tampoco se implementan.
-- Lo que **sí** se demuestra, probado de punta a punta (21 tests en verde, backend + integración):
+- Lo que **sí** se demuestra, probado de punta a punta (22 tests en verde, backend + integración):
   - Login JWT por rol; registro propio de cliente o comercio (`/registro`).
   - Alta de comercio pendiente (por registro o por dato semilla) → **ADMIN aprueba o rechaza** (módulo de moderación).
   - Cliente arma carrito mono-comercio y crea un pedido de retiro.

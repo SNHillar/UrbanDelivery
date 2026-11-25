@@ -1,5 +1,7 @@
 package ar.urbandelivery.auth;
 
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,7 +60,11 @@ class AuthIT {
 		mvc.perform(get("/api/merchants"))
 			.andExpect(status().isOk())
 			// Comercio pendiente de aprobación no aparece
-			.andExpect(jsonPath("$[?(@.name == 'Verdulería Don José')]").isEmpty());
+			.andExpect(jsonPath("$[?(@.name == 'Verdulería Don José')]").isEmpty())
+			// V1 solo retiro: ningún comercio publica envío ni tarifa (migración V2)
+			.andExpect(jsonPath("$[*].offersDelivery", everyItem(is(false))))
+			.andExpect(jsonPath("$[*].offersPickup", everyItem(is(true))))
+			.andExpect(jsonPath("$[*].deliveryFee", everyItem(is(0.0))));
 	}
 
 	@Test

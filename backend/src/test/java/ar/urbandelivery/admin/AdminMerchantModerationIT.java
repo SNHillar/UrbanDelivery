@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Módulo "admin" (docs/05-modulos.md): el ADMIN aprueba o rechaza un comercio PENDING y recién
- * ahí aparece en el listado público. Cada test siembra su propio comercio por JdbcTemplate para
+ * Módulo "admin" (docs/05-modulos.md): el ADMIN aprueba o rechaza un comercio PENDING. Mientras
+ * está pendiente no es público ni recibe pedidos, aunque su dueño puede iniciar sesión. Cada test siembra su propio comercio por JdbcTemplate para
  * no tocar la "Verdulería Don José" de db/demo, de la que depende AuthIT.
  */
 @SpringBootTest
@@ -42,6 +42,7 @@ class AdminMerchantModerationIT {
 	String admin;
 	String client;
 	long pendingMerchantId;
+	String ownerEmail;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -98,14 +99,47 @@ class AdminMerchantModerationIT {
 			.andExpect(jsonPath("$.code").value("INVALID_TRANSITION"));
 	}
 
+	@Test
+	void pendingMerchantIsNotPublicAndCannotReceiveOrdersButItsOwnerCanSignIn() throws Exception {
+		long productId = seedProduct(pendingMerchantId);
+		String order = """
+				{"merchantId": %d, "fulfillmentType": "PICKUP", "items": [{"productId": %d, "quantity": 1}]}
+				""".formatted(pendingMerchantId, productId);
+
+		// No es público: ni su catálogo ni pedidos de clientes
+		mvc.perform(get("/api/merchants/" + pendingMerchantId + "/products"))
+			.andExpect(status().isNotFound());
+		mvc.perform(post("/api/orders").header("Authorization", "Bearer " + client)
+				.contentType(MediaType.APPLICATION_JSON).content(order))
+			.andExpect(status().isNotFound());
+
+		// Comportamiento deliberado: el dueño inicia sesión y ve sus productos mientras espera
+		String owner = token(ownerEmail);
+		mvc.perform(get("/api/merchant/products").header("Authorization", "Bearer " + owner))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[?(@.id == " + productId + ")]").exists());
+
+		mvc.perform(post("/api/admin/merchants/" + pendingMerchantId + "/approve").header("Authorization", "Bearer " + admin))
+			.andExpect(status().isOk());
+		mvc.perform(post("/api/orders").header("Authorization", "Bearer " + client)
+				.contentType(MediaType.APPLICATION_JSON).content(order))
+			.andExpect(status().isCreated());
+	}
+
 	private long seedPendingMerchant() {
 		String email = "pendiente-it-" + System.nanoTime() + "@urbandelivery.local";
+		ownerEmail = email;
 		jdbc.update("INSERT INTO users (email, password_hash, full_name, role) VALUES (?, ?, ?, 'MERCHANT')", email,
 				passwordEncoder.encode(PASSWORD), "Dueño de prueba");
 		Long ownerId = jdbc.queryForObject("SELECT id FROM users WHERE email = ?", Long.class, email);
 		jdbc.update("INSERT INTO merchants (owner_user_id, name, address, offers_pickup, delivery_fee, approval_status) "
 				+ "VALUES (?, ?, ?, TRUE, 0, 'PENDING')", ownerId, "Comercio de prueba " + ownerId, "Calle Falsa 123");
 		return jdbc.queryForObject("SELECT id FROM merchants WHERE owner_user_id = ?", Long.class, ownerId);
+	}
+
+	private long seedProduct(long merchantId) {
+		jdbc.update("INSERT INTO products (merchant_id, name, price) VALUES (?, 'Producto de prueba', 1000)", merchantId);
+		return jdbc.queryForObject("SELECT id FROM products WHERE merchant_id = ?", Long.class, merchantId);
 	}
 
 	private String token(String email) throws Exception {

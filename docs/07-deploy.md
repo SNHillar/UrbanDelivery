@@ -1,6 +1,10 @@
 # UrbanDelivery — Deploy (API + DB en Render, front en Vercel)
 
-Guía paso a paso para dejar el sistema disponible en línea, tal como pide la entrega final. No hace falta tocar código: toda la configuración ya sale de variables de entorno (ver [backend/README.md](../backend/README.md#configuración) y [frontend/README.md](../frontend/README.md)).
+Guía paso a paso para dejar el sistema disponible en línea, tal como pide la entrega final.
+
+> **Esto es un entorno de demostración académica, no una configuración productiva.** El deploy de evaluación carga a propósito los datos ficticios y las cuentas de prueba de `db/demo` (incluida una cuenta ADMIN con contraseña conocida), para que el equipo docente pueda probarlo sin pedir accesos. Una puesta en producción real usaría solo las migraciones estructurales (`FLYWAY_LOCATIONS=classpath:db/migration`), secretos propios y ninguna cuenta pública; ver [backend/README.md](../backend/README.md#base-de-datos).
+
+No hace falta tocar código: toda la configuración ya sale de variables de entorno (ver [backend/README.md](../backend/README.md#configuración) y [frontend/README.md](../frontend/README.md)).
 
 > Los dos servicios se necesitan mutuamente (el front necesita la URL de la API; la API necesita la URL del front para CORS), así que el orden importa: primero la base, después la API, después el front, y por último se vuelve a la API para completar el CORS.
 
@@ -28,7 +32,7 @@ Guía paso a paso para dejar el sistema disponible en línea, tal como pide la e
    | `CORS_ALLOWED_ORIGINS` | por ahora `http://localhost:5173` (se corrige en el paso 4, cuando exista la URL de Vercel) |
 
    `PORT` **no se configura a mano**: Render lo inyecta solo y `application.yml` ya lo lee (`server.port=${PORT:8080}`).
-6. Deploy. Al terminar, Render da una URL tipo `https://urbandelivery-api.onrender.com`. Probarla: `https://urbandelivery-api.onrender.com/actuator/health` debería responder `{"status":"UP"}`, y `/api/merchants` debería listar los comercios de demo (Flyway corre las migraciones y carga los datos de `db/demo` solo al arrancar).
+6. Deploy. Al terminar, Render da una URL tipo `https://urbandelivery-api.onrender.com`. Probarla: `https://urbandelivery-api.onrender.com/actuator/health` debería responder `{"status":"UP"}`, y `/api/merchants` debería listar los comercios de demo (Flyway corre las migraciones y carga los datos de `db/demo` solo al arrancar; para este deploy de demostración **no** se define `FLYWAY_LOCATIONS`, así queda el valor por defecto que incluye la demo).
 
 **Nota sobre el plan Free:** el servicio se "duerme" después de ~15 minutos sin tráfico y la primera visita después de eso tarda unos 30–50 segundos en responder mientras arranca de nuevo. Es normal, no es un error — avisarlo en el informe/video para que no se confunda con una falla.
 
